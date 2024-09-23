@@ -430,15 +430,15 @@ if submitted:
 
 
 
-  st.write("Amount checking: ")
-  st.write(LDB4.fillna(0).groupby(['Status'])[['Amount Approved / Facility Limit (MYR)',
-                            'Cost/Principal Outstanding (MYR)',
-                            'Total Banking Exposure (MYR)',
-                            'Total Loans Outstanding (MYR)',
-             'Expected Credit Loss LAF (ECL) (MYR) 2']].sum().reset_index())
+  #st.write("Amount checking: ")
+  #st.write(LDB4.fillna(0).groupby(['Status'])[['Amount Approved / Facility Limit (MYR)',
+  #                          'Cost/Principal Outstanding (MYR)',
+  #                          'Total Banking Exposure (MYR)',
+  #                          'Total Loans Outstanding (MYR)',
+  #           'Expected Credit Loss LAF (ECL) (MYR) 2']].sum().reset_index())
   
-  st.write("Account duplicate checking: ")
-  st.write(LDB4['EXIM Account No.'].value_counts())
+  #st.write("Account duplicate checking: ")
+  #st.write(LDB4['EXIM Account No.'].value_counts())
 
   #st.write(LDB4.iloc[np.where(LDB4['EXIM Account No.']==value)])
 
