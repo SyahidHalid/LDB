@@ -428,8 +428,7 @@ if submitted:
   st.write("Column checking: ")
   st.write(LDB4.shape)
 
-  st.write("Account duplicate checking: ")
-  st.write(LDB4['EXIM Account No.'].value_counts())
+
 
   st.write("Amount checking: ")
   st.write(LDB4.fillna(0).groupby(['Status'])[['Amount Approved / Facility Limit (MYR)',
@@ -438,5 +437,8 @@ if submitted:
                             'Total Loans Outstanding (MYR)',
              'Expected Credit Loss LAF (ECL) (MYR) 2']].sum().reset_index())
   
+  st.write("Account duplicate checking: ")
+  st.write(LDB4['EXIM Account No.'].value_counts())
+
   #st.write(LDB4.iloc[np.where(LDB4['EXIM Account No.']==value)])
 
