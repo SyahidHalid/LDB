@@ -13,7 +13,7 @@ import numpy as np
 
 #----------------------nama kat web atas yg newtab (png sahajer)--------------------
 st.set_page_config(
-  page_title = 'Syahid - Automation',
+  page_title = 'Loan Database - Automation',
   page_icon = "EXIM.png",
   layout="wide"
   )
@@ -74,9 +74,9 @@ if df1:
   df1 = pd.read_excel(df1, sheet_name=sheet, header=1)
   #st.write(df1.head(1))
 
-df2 = form.file_uploader(label= "Upload Month End Rate:")
-if df2:
-  MRate = pd.read_excel(df2, sheet_name="Forex", header=2)
+#df2 = form.file_uploader(label= "Upload Month End Rate:")
+#if df2:
+#  MRate = pd.read_excel(df2, sheet_name="Forex", header=2)
 
 submitted = form.form_submit_button("Submit")
 if submitted:
@@ -85,10 +85,24 @@ if submitted:
 
   st.write(f"File submitted for : "+str(year)+"-"+str(month))
   #st.write(f"All file submitted for :{str(year)+str(month)}")
-
-  #---------------------------------------------Start-------------------------------------------------------------
-
   
+  
+  #---------------------------------------------Start-------------------------------------------------------------
+  
+  df1.columns = df1.columns.str.replace("\n", "")
+  #df1.columns = df1.columns.str.replace(" ", "")
+  
+  #st.write(df1)
+
+  merge_MIA = df1.iloc[np.where((df1['EXIM Account No.']!="Total")&
+                                ~(df1['EXIM Account No.'].isna()))][['CIF Number','EXIM Account No.','Finance(SAP) Number',
+                   'Nature of Account',
+                   'Disbursement/Drawdown Status',
+                   'Status',
+                   'Cost/Principal Outstanding (Facility Currency)',
+                   'Cost/Principal Outstanding (MYR)',
+                   'Amount Approved / Facility Limit (Facility Currency)',
+                   'Amount Approved / Facility Limit (MYR)']]
 
   def NOB(a_exp,b_exp,c_exp,d_exp,f_exp):
     if (a_exp=='Non Trade')&((b_exp=="No Further Disbursement")|(b_exp=="Fully Disbursed")):
@@ -124,17 +138,17 @@ if submitted:
 
 
 
-  st.write(LDB2)
+  st.write(merge_MIA)
 
   st.write("Column checking: ")
-  st.write(LDB2.shape)
+  st.write(merge_MIA.shape)
 
   st.write("")
   st.write("Download file: ")
   #st.write("Download file: ")
   st.download_button("Download CSV",
-                   LDB2.to_csv(index=False),
-                   file_name='Loan Database as at '+str(year)+"-"+str(month)+' - MIS RAW.csv',
+                   merge_MIA.to_csv(index=False),
+                   file_name='11. Banking Exposure '+str(year)+"-"+str(month)+'.csv',
                    mime='text/csv')
   
 

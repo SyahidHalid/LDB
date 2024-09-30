@@ -13,7 +13,7 @@ import numpy as np
 
 #----------------------nama kat web atas yg newtab (png sahajer)--------------------
 st.set_page_config(
-  page_title = 'Syahid - Automation',
+  page_title = 'Loan Database - Automation',
   page_icon = "EXIM.png",
   layout="wide"
   )
