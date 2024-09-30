@@ -120,11 +120,16 @@ if submitted:
                             'Corporate Status']]
   
   #---------------------------------------------Details-------------------------------------------------------------
+  
+  st.write(LDB2)
+
+  st.write("Column checking: ")
+  st.write(LDB2.shape)
+
+  st.write("")
+  st.write("Download file: ")
   #st.write("Download file: ")
   st.download_button("Download CSV",
                    LDB2.to_csv(index=False),
                    file_name='Loan Database as at '+str(year)+"-"+str(month)+' - BNM RAW.csv',
                    mime='text/csv')
-  
-  st.write("Column checking: ")
-  st.write(LDB2.shape)

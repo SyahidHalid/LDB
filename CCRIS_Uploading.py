@@ -419,14 +419,20 @@ if submitted:
   LDB4.fillna(0,inplace=True)
   
   #---------------------------------------------Details-------------------------------------------------------------
-  #st.write("Download file: ")
+  
+  st.write(LDB4)
+
+  st.write("Column checking: ")
+  st.write(LDB4.shape)
+
+  st.write("")
+  st.write("Download file: ")
   st.download_button("Download CSV",
                    LDB4.to_csv(index=False),
                    file_name='Loan Database as at '+str(year)+"-"+str(month)+' - CCRIS RAW.csv',
                    mime='text/csv')
   
-  st.write("Column checking: ")
-  st.write(LDB4.shape)
+
 
 
 

@@ -256,7 +256,8 @@ if submitted:
   merge1_ldb['Cumulative Ta`widh Payment/Penalty Repayment  (MYR) New'] = merge1_ldb['Cumulative Ta`widh Payment/Penalty Repayment  (MYR)'] +  merge1_ldb['Ta`widh Payment/Penalty Repayment (MYR)'] 
   merge1_ldb['Cumulative Ta`widh Payment/Penalty Repayment (Facility Currency) New'] = merge1_ldb['Cumulative Ta`widh Payment/Penalty Repayment (Facility Currency)'] +  merge1_ldb['Ta`widh Payment/Penalty Repayment (Facility Currency)'] 
 
-  merge_ldb = merge_ldb[[ 'CIF Number','EXIM Account No.','Account','Type_of_Financing', 
+  #'Type_of_Financing',
+  merge_ldb = merge_ldb[[ 'CIF Number','EXIM Account No.','Account', 
        'Currency',
        'Other_Charges_Payment_FC', 'Other_Charges_Payment_MYR',
        #'Cumulative Other Charges Payment (Facility Currency)',
@@ -279,39 +280,68 @@ if submitted:
        'Cumulative Ta`widh Payment/Penalty Repayment (Facility Currency) New',
        'Cumulative Ta`widh Payment/Penalty Repayment  (MYR) New']]
 
+  #combine
+  combine = merge_ldb.merge(merge1_ldb[['Account', 
+       'Profit_Payment_Interest_Repayment_FC',
+       'Profit_Payment_Interest_Repayment_MYR',
+       #'Cumulative Profit Payment/Interest Repayment (Facility Currency)',
+       #'Cumulative Profit Payment/Interest Repayment (MYR)',
+       'Cumulative Profit Payment/Interest Repayment (Facility Currency) New',
+       'Cumulative Profit Payment/Interest Repayment (MYR) New',
+       'Ta`widh Payment/Penalty Repayment (Facility Currency)',
+       'Ta`widh Payment/Penalty Repayment (MYR)',
+       #'Cumulative Ta`widh Payment/Penalty Repayment (Facility Currency)',
+       #'Cumulative Ta`widh Payment/Penalty Repayment  (MYR)', 
+       'Cumulative Ta`widh Payment/Penalty Repayment (Facility Currency) New',
+       'Cumulative Ta`widh Payment/Penalty Repayment  (MYR) New']],on="Account", how="outer") #,indicator=True
+
+
   #---------------------------------------------Download-------------------------------------------------------------
 
   #st.write('Sum Total Loans Outstanding (MYR) : RM'+str(sum))
-  st.write(f"Sum Other Charges Payment (MYR) : ${float(sum(merge_ldb['Other_Charges_Payment_MYR']))}")
-  st.write(f"Sum Cumulative Other Charges Payment (MYR) : ${float(sum(merge_ldb['Cumulative Other Charges Payment (MYR) New']))}")
+
+  st.write("")
+  st.write(f"Sum Other Charges Payment (FC) : ${float(sum(combine['Other_Charges_Payment_FC']))}")
+  st.write(f"Sum Other Charges Payment (MYR) : RM{float(sum(combine['Other_Charges_Payment_MYR']))}")
+  st.write("")
+  st.write(f"Sum Cummulative Other Charges Payment (FC) : ${float(sum(combine['Cumulative Other Charges Payment (Facility Currency) New']))}")
+  st.write(f"Sum Cummulative Other Charges Payment (MYR) : RM{float(sum(combine['Cumulative Other Charges Payment (MYR) New']))}")
+  st.write("")
+  st.write(f"Sum Profit Payment (FC) : ${float(sum(combine['Profit_Payment_Interest_Repayment_FC']))}")
+  st.write(f"Sum Profit Payment (MYR) : RM{float(sum(combine['Profit_Payment_Interest_Repayment_MYR']))}")
+  st.write("")
+  st.write(f"Sum Cummulative Profit Payment (FC) : ${float(sum(combine['Cumulative Profit Payment/Interest Repayment (Facility Currency) New']))}")
+  st.write(f"Sum Cummulative Profit Payment (MYR) : RM{float(sum(combine['Cumulative Profit Payment/Interest Repayment (MYR) New']))}")
+  st.write("")
+  st.write(f"Sum Ta`widh Payment (FC) : ${float(sum(combine['Ta`widh Payment/Penalty Repayment (Facility Currency)']))}")
+  st.write(f"Sum Ta`widh Payment (MYR) : RM{float(sum(combine['Ta`widh Payment/Penalty Repayment (MYR)']))}")
+  st.write("")
+  st.write(f"Sum Cumulative Ta`widh Payment (FC) : ${float(sum(combine['Cumulative Ta`widh Payment/Penalty Repayment (Facility Currency) New']))}")
+  st.write(f"Sum Cumulative Ta`widh Payment (MYR) : RM{float(sum(combine['Cumulative Ta`widh Payment/Penalty Repayment  (MYR) New']))}")
+
 
   st.write("Row Column Checking: ")
-  st.write(merge_ldb.shape)
+  st.write(combine.shape)
 
-  st.write(merge_ldb)
+  st.write(combine)
 
   st.write("Download file: ")
   st.download_button("Download CSV",
-                   merge_ldb.to_csv(index=False),
-                   file_name='05. Other Charges Payment '+str(year)+"-"+str(month)+'.csv',
+                   combine.to_csv(index=False),
+                   file_name='05. Profit Payment & Other Charges Payment '+str(year)+"-"+str(month)+'.csv',
                    mime='text/csv')
   
-  st.write(f"Sum Profit Payment (MYR) : ${float(sum(merge1_ldb['Profit_Payment_Interest_Repayment_MYR']))}")
-  st.write(f"Sum Cumulative Profit Payment (MYR) : ${float(sum(merge1_ldb['Cumulative Profit Payment/Interest Repayment (MYR) New']))}")
 
-  st.write(f"Sum Ta'widh Payment (MYR) : ${float(sum(merge1_ldb['Ta`widh Payment/Penalty Repayment (MYR)']))}")
-  st.write(f"Sum Cumulative Ta'widh Payment (MYR) : ${float(sum(merge1_ldb['Cumulative Ta`widh Payment/Penalty Repayment  (MYR) New']))}")
+  #st.write("Row Column Checking: ")
+  #st.write(merge1_ldb.shape)
 
-  st.write("Row Column Checking: ")
-  st.write(merge1_ldb.shape)
-
-  st.write(merge1_ldb)
+  #st.write(merge1_ldb)
            
   #st.write("SAP Duplication Checking: ")
   #st.write(appendfinal3['Account'].value_counts())
 
-  st.write("Download file: ")
-  st.download_button("Download CSV",
-                   merge1_ldb.to_csv(index=False),
-                   file_name='05. Profit Payment '+str(year)+"-"+str(month)+'.csv',
-                   mime='text/csv')
+  #st.write("Download file: ")
+  #st.download_button("Download CSV",
+  #                 merge1_ldb.to_csv(index=False),
+  #                 file_name='05. Profit Payment '+str(year)+"-"+str(month)+'.csv',
+  #                 mime='text/csv')

@@ -182,16 +182,22 @@ if submitted:
                             'Amount Approved / Facility Limit (Facility Currency)','Position as At' ]]
   
   #---------------------------------------------Details-------------------------------------------------------------
+
+
+
+  st.write(LDB2)
+
+  st.write("Column checking: ")
+  st.write(LDB2.shape)
+
+  st.write("")
+  st.write("Download file: ")
   #st.write("Download file: ")
   st.download_button("Download CSV",
                    LDB2.to_csv(index=False),
                    file_name='Loan Database as at '+str(year)+"-"+str(month)+' - MIS RAW.csv',
                    mime='text/csv')
   
-  st.write("Column checking: ")
-  st.write(LDB2.shape)
-
-
 
   #st.write("Amount checking: ")
   #st.write(LDB2.fillna(0).groupby(['Status'])[['Cost/Principal Outstanding (MYR)']].sum().reset_index())

@@ -508,7 +508,21 @@ if submitted:
                              #'Cumulative Profit Payment/Interest Repayment (MYR) New',
                              #'Cumulative Profit Payment/Interest Repayment (MYR)',
                              'Curr']]
-  
+
+  appendfinal3['Cost/Principal Outstanding (Facility Currency)'].fillna(0,inplace=True)
+  appendfinal3['Cost/Principal Outstanding (MYR)'].fillna(0,inplace=True)
+  appendfinal3['Accrued Profit/Interest of the month (Facility Currency)'].fillna(0,inplace=True)
+  appendfinal3['Accrued Profit/Interest of the month (MYR)'].fillna(0,inplace=True)
+  appendfinal3['Modification of Loss (Facility Currency)'].fillna(0,inplace=True)
+  appendfinal3['Modification of Loss (MYR)'].fillna(0,inplace=True)
+  appendfinal3['Cumulative Accrued Profit/Interest (Facility Currency)'].fillna(0,inplace=True)
+  appendfinal3['Cumulative Accrued Profit/Interest (MYR)'].fillna(0,inplace=True)
+  appendfinal3['Income/Interest in Suspense (Facility Currency)'].fillna(0,inplace=True)
+  appendfinal3['Income/Interest in Suspense (MYR)'].fillna(0,inplace=True)
+  appendfinal3['Other Charges (Facility Currency)'].fillna(0,inplace=True)
+  appendfinal3['Other Charges (MYR)'].fillna(0,inplace=True)
+  appendfinal3['Total Loans Outstanding (Facility Currency)'].fillna(0,inplace=True)
+  appendfinal3['Total Loans Outstanding (MYR)'].fillna(0,inplace=True)
 
 
   
@@ -518,16 +532,37 @@ if submitted:
   st.write("Row Column Checking: ")
   st.write(appendfinal3.shape)
 
-  sum1 = sum(appendfinal3['Total Loans Outstanding (MYR)'])
-  
+  #st.write("-------------------------------------------------------------------------------")
+  st.write(f"Sum Cost/Principal (FC) : ${float(sum(appendfinal3['Cost/Principal Outstanding (Facility Currency)']))}")
+  st.write(f"Sum Cost/Principal (MYR) : RM{float(sum(appendfinal3['Cost/Principal Outstanding (MYR)']))}")
+  st.write("")
+  st.write(f"Sum Total Loans Outstanding (FC) : ${float(sum(appendfinal3['Accrued Profit/Interest of the month (Facility Currency)']))}")
+  st.write(f"Sum Total Loans Outstanding (MYR) : RM{float(sum(appendfinal3['Accrued Profit/Interest of the month (MYR)']))}")
+  st.write("")
+  st.write(f"Sum Mora (FC) : ${float(sum(appendfinal3['Modification of Loss (Facility Currency)']))}")
+  st.write(f"Sum Mora (MYR) : RM{float(sum(appendfinal3['Modification of Loss (MYR)']))}")
+  st.write("")
+  st.write(f"Sum Cumulative Accrued (FC) : ${float(sum(appendfinal3['Cumulative Accrued Profit/Interest (Facility Currency)']))}")
+  st.write(f"Sum Cumulative Accrued (MYR) : RM{float(sum(appendfinal3['Cumulative Accrued Profit/Interest (MYR)']))}") 
+  st.write("")
+  st.write(f"Sum IIS (FC) : ${float(sum(appendfinal3['Income/Interest in Suspense (Facility Currency)']))}")
+  st.write(f"Sum IIS (MYR) : RM{float(sum(appendfinal3['Income/Interest in Suspense (MYR)']))}")
+  st.write("")
+  st.write(f"Sum Other Charges (FC) : ${float(sum(appendfinal3['Other Charges (Facility Currency)']))}")
+  st.write(f"Sum Other Charges (MYR) : RM{float(sum(appendfinal3['Other Charges (MYR)']))}")
+  st.write("")
+  st.write(f"Sum Total Loans Outstanding (FC) : ${float(sum(appendfinal3['Total Loans Outstanding (Facility Currency)']))}")
+  st.write(f"Sum Total Loans Outstanding (MYR) : RM{float(sum(appendfinal3['Total Loans Outstanding (MYR)']))}")
+    
   #st.write('Sum Total Loans Outstanding (MYR) : RM'+str(sum))
-  st.write(f"Sum Total Loans Outstanding (MYR) : RM{float(sum1)}")
+
            
   #st.write("SAP Duplication Checking: ")
   #st.write(appendfinal3['Finance(SAP) Number'].value_counts())
 
   st.write(appendfinal3)
-
+  
+  st.write("")
   st.write("Download file: ")
   st.download_button("Download CSV",
                    appendfinal3.to_csv(index=False),

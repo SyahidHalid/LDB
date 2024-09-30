@@ -193,12 +193,22 @@ if submitted:
   pd.set_option("display.max_rows", 100)
   pd.set_option("display.precision", 2) #2 titik perpuluhan
 
+
   #st.write('Sum Total Loans Outstanding (MYR) : RM'+str(sum))
+  st.write("")
   st.write(f"Sum Disbursement Drawdown (FC) : ${float(sum(appendfinal3['Disbursement_Drawdown_Facility_Currency']))}")
   st.write(f"Sum Disbursement Drawdown (MYR) : RM{float(sum(appendfinal3['Disbursement_Drawdown_MYR']))}")
+  st.write("")
+  st.write(f"Sum Cumulative Disbursement Drawdown (FC) : ${float(sum(appendfinal3['Cumulative Disbursement/Drawdown (Facility Currency) New']))}")
+  st.write(f"Sum Cumulative Disbursement Drawdown (MYR) : RM{float(sum(appendfinal3['Cumulative Disbursement/Drawdown (MYR) New']))}")
+  st.write("")
   st.write(f"Sum Cost Payment Principal Payment (FC) : ${float(sum(appendfinal3['Cost_Payment_Principal_Repayment_Facility_Currency']))}")
   st.write(f"Sum Cost Payment Principal Payment (MYR) : RM{float(sum(appendfinal3['Cost_Payment_Principal_Repayment_MYR']))}")
-
+  st.write("")
+  st.write(f"Sum Cumulative Cost Payment Principal Payment (FC) : ${float(sum(appendfinal3['Cumulative Cost Payment/Principal Repayment (Facility Currency) New']))}")
+  st.write(f"Sum Cumulative Cost Payment Principal Payment (MYR) : RM{float(sum(appendfinal3['Cumulative Cost Payment/Principal Repayment (MYR) New']))}")
+  
+  st.write("")
   st.write("Row Column Checking: ")
   st.write(appendfinal3.shape)
            

@@ -186,9 +186,11 @@ if submitted:
   merge['CnC_ECL_MYR'] = merge['CnC_ECL_MYR'].astype(float)
 
   appendfinal = merge.fillna(0).groupby(['Loan_Acc_'\
-  ,'Ccy','Borrower','Type_of_Financing'])[['LAF_ECL_FC'\
+  ,'Ccy','Type_of_Financing'])[['LAF_ECL_FC'\
   ,'LAF_ECL_MYR','CnC_ECL_FC','CnC_ECL_MYR']].sum().reset_index().drop_duplicates('Loan_Acc_', keep='first')
 
+  #,'Borrower'
+  
   appendfinal.rename(columns={'Loan_Acc_':'Account'},inplace=True)
   appendfinal['Account'] = appendfinal['Account'].astype(str)
 
@@ -202,9 +204,11 @@ if submitted:
   #---------------------------------------------Download-------------------------------------------------------------
 
   #st.write('Sum Total Loans Outstanding (MYR) : RM'+str(sum))
+  st.write("")
   st.write(f"Sum ECL LAF (FC) : ${float(sum(appendfinal1['LAF_ECL_FC']))}")
   st.write(f"Sum ECL LAF (MYR) : RM{float(sum(appendfinal1['LAF_ECL_MYR']))}")
 
+  st.write("")
   st.write(f"Sum ECL C&C (FC) : ${float(sum(appendfinal1['CnC_ECL_FC']))}")
   st.write(f"Sum ECL C&C (MYR) : RM{float(sum(appendfinal1['CnC_ECL_MYR']))}")
 
