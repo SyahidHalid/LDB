@@ -78,7 +78,7 @@ May_FC = form.text_input("1st (IA) FC Column Sequence Aug24 is 142, Add 2 for ne
 May_RM_Is = form.text_input("2nd (C&C) MYR Column Sequence Aug24 is 61, Add 1 for next: Sep24 62")
 May_FC_Is = form.text_input("2nd (C&C) FC Column Sequence Aug24 is 122, Add 2 for next: Sep24 is 124")
 
-df1 = form.file_uploader(label= "Upload Latest Data Mirror:")
+df1 = form.file_uploader(label= "Upload Latest Allowance:")
 
 if df1:
   IA_Conv = pd.read_excel(df1, sheet_name=D1, header=6)
@@ -186,10 +186,10 @@ if submitted:
   merge['CnC_ECL_MYR'] = merge['CnC_ECL_MYR'].astype(float)
 
   appendfinal = merge.fillna(0).groupby(['Loan_Acc_'\
-  ,'Ccy','Type_of_Financing'])[['LAF_ECL_FC'\
+  ,'Borrower','Ccy','Type_of_Financing'])[['LAF_ECL_FC'\
   ,'LAF_ECL_MYR','CnC_ECL_FC','CnC_ECL_MYR']].sum().reset_index().drop_duplicates('Loan_Acc_', keep='first')
 
-  #,'Borrower'
+  #
   
   appendfinal.rename(columns={'Loan_Acc_':'Account'},inplace=True)
   appendfinal['Account'] = appendfinal['Account'].astype(str)

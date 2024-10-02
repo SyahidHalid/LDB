@@ -169,12 +169,12 @@ if submitted:
   
   #st.write(CnC)
 
-  merge1 = merge.iloc[np.where(merge['Account_No']!="nan")].fillna(0).groupby(['Account_No','Category','Month'])[['LAF_ECL_FC',
+  merge1 = merge.iloc[np.where(merge['Account_No']!="nan")].fillna(0).groupby(['Account_No','Borrower_name','Category','Month'])[['LAF_ECL_FC',
                                                             'LAF_ECL_MYR',
                                                             'CnC_ECL_FC',
                                                             'CnC_ECL_MYR']].sum().reset_index()
   
-  #,'Borrower_name'
+  #
 
 
   #---------------------------------------------Download-------------------------------------------------------------
