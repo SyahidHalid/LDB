@@ -108,7 +108,7 @@ if submitted:
                                                'Currency',
                                                'First Released Date',
                                                'Maturity date',
-                                               'Availability period',
+                                               'Actual Availability period',
                                                'DPD',
                                                'Principal payment frequency',
                                                'Interest payment frequency']].rename(columns={'Account No':'Finance(SAP) Number'})
@@ -138,7 +138,7 @@ if submitted:
                    'Average Profit/Interest Rate',
                    'First Released Date',
                    'Maturity date',
-                   'Availability period',
+                   'Actual Availability period',
                    'DPD',
                    'Principal payment frequency',
                    'Interest payment frequency']]

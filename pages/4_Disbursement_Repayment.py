@@ -108,6 +108,18 @@ if submitted:
   Rep_Conv.columns = Rep_Conv.columns.str.replace("\n", "_")
   Rep_Conv.columns = Rep_Conv.columns.str.replace(" ", "")
 
+  Dis_isl['St'] =   Dis_isl['St'].str[8:]
+  Rep_Isl['St'] =   Rep_Isl['St'].str[8:]
+  Dis_Conv['St'] =   Dis_Conv['St'].str[8:]
+  Rep_Conv['St'] =   Rep_Conv['St'].str[8:]
+
+  Dis_isl.rename(columns={'St':'Account'},inplace=True)
+  Rep_Isl.rename(columns={'St':'Account'},inplace=True)
+  Dis_Conv.rename(columns={'St':'Account'},inplace=True)
+  Rep_Conv.rename(columns={'St':'Account'},inplace=True)
+
+
+
   Dis_isl_1 = Dis_isl.iloc[np.where((Dis_isl['Unnamed:1']=="**")&(~Dis_isl.Account.isin(['Account']))&~(Dis_isl.Account.isna()))].fillna(0).groupby(['Account','Curr.'])[['Amtinloc.cur.','AmountinDC']].sum().reset_index()
   Rep_Isl_1 = Rep_Isl.iloc[np.where((Rep_Isl['Unnamed:1']=="**")&(~Rep_Isl.Account.isin(['Account']))&~(Rep_Isl.Account.isna()))].fillna(0).groupby(['Account','Curr.'])[['Amtinloc.cur.','AmountinDC']].sum().reset_index()
   Dis_Conv_1 = Dis_Conv.iloc[np.where((Dis_Conv['Unnamed:1']=="**")&(~Dis_Conv.Account.isin(['Account']))&~(Dis_Conv.Account.isna()))].fillna(0).groupby(['Account','Curr.'])[['Amtinloc.cur.','AmountinDC']].sum().reset_index()
@@ -117,7 +129,9 @@ if submitted:
   Rep_Isl_1['Type_of_Financing'] = 'Islamic'
   Dis_Conv_1['Type_of_Financing'] = 'Conventional'
   Rep_Conv_1['Type_of_Financing'] = 'Conventional'
-
+  
+  #st.write(Dis_isl_1)
+  
   Disbursement = pd.concat([Dis_isl_1,Dis_Conv_1])
   Repayment = pd.concat([Rep_Isl_1,Rep_Conv_1])
 
@@ -145,12 +159,15 @@ if submitted:
   LDB_prev['Cumulative Cost Payment/Principal Repayment (Facility Currency)'].fillna(0,inplace=True) 
   LDB_prev['Cumulative Cost Payment/Principal Repayment (MYR)'].fillna(0,inplace=True)
 
-  appendfinal_ldb = merge.merge(LDB_prev[['Finance(SAP) Number','EXIM Account No.','CIF Number',
+  #st.write(Rep_Isl_1)
+           
+  appendfinal_ldb = merge.merge(LDB_prev.iloc[np.where(~(LDB_prev['EXIM Account No.'].isna())&(LDB_prev['EXIM Account No.']!="Total"))][['Finance(SAP) Number','EXIM Account No.','CIF Number',
                                               'Currency',
                                               'Cumulative Disbursement/Drawdown (Facility Currency)',
                                               'Cumulative Disbursement/Drawdown (MYR)',
                                               'Cumulative Cost Payment/Principal Repayment (Facility Currency)',
                                               'Cumulative Cost Payment/Principal Repayment (MYR)']].drop_duplicates('Finance(SAP) Number',keep='first').rename(columns={'Finance(SAP) Number':'Account'}),on=['Account'],how='outer', suffixes=('_x', ''),indicator=True)
+  #st.write(appendfinal_ldb)
 
   appendfinal_ldb['Disbursement_Drawdown_Facility_Currency'].fillna(0,inplace=True)
   appendfinal_ldb['Disbursement_Drawdown_MYR'].fillna(0,inplace=True)
