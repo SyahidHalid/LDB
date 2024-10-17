@@ -83,7 +83,7 @@ if submitted:
   st.write(f"File submitted for : "+str(year)+"-"+str(month))
   #st.write(f"All file submitted for :{str(year)+str(month)}")
 
-  LDB1 = df1.iloc[np.where(~df1['No.'].isna())]
+  LDB1 = df1.iloc[np.where(~df1['CIF Number'].isna())]
   
   #st.write(LDB1.head(3))
 
