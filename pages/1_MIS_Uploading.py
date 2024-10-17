@@ -63,7 +63,8 @@ form = st.form("Basic form")
 
 year = form.slider("Year", min_value=2020, max_value=2030, step=1)
 month = form.slider("Month", min_value=1, max_value=12, step=1)
-sheet = form.text_input("Input sheet Name ")
+#sheet = form.text_input("Input sheet Name ")
+sheet = "Loan Database"
 
 #age = form.slider("Age", min_value=18, max_value=100, step=1)
 #date = form.date_input("Date", value=dt.date.today())
@@ -111,10 +112,10 @@ if submitted:
                             'Cancellation Date/Fully Settled Date',
                             'Write off Date',
                             'Partial Write off Date',
-                            'Ownership',
-                            'Officer in Charge',
+                            #'Ownership',
+                            #'Officer in Charge',
                             'Relationship Manager (RM)',
-                            'Banking Team',
+                            'Team',
                             'Facility Agreement Date',
                             'Annual Review Date',
                             'Expiry of Availability Period',
@@ -127,7 +128,8 @@ if submitted:
                             'Payment/Repayment Frequency (Cost/Principal)',
                             'Effective cost of borrowings',
                             'Profit/Interest Margin',
-                            'Average Profit/Interest Rate',
+                            'Effective Interest Rate (EIR)',
+                            #'Average Profit/Interest Rate',
                             'Ta`widh Compensation/Penalty Rate',
                             'Cost/Principal Outstanding (Facility Currency)',
                             'Cost/Principal Outstanding (MYR)',
@@ -168,8 +170,9 @@ if submitted:
                             'Month in Arrears',
                             'Date of Overdue',
                             'Risk Analyst',
-                            'PD',
-                            'PF',
+                            'Internal Credit Rating (PD/PF)',
+                            #'PD',
+                            #'PF',
                             'LGD',
                             'MFRS9 Staging',
              'Date Classified as Watchlist',

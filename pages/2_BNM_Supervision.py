@@ -63,7 +63,8 @@ form = st.form("Basic form")
 
 year = form.slider("Year", min_value=2020, max_value=2030, step=1)
 month = form.slider("Month", min_value=1, max_value=12, step=1)
-sheet = form.text_input("Input sheet Name ")
+#sheet = form.text_input("Input sheet Name ")
+sheet = "Loan Database"
 
 #age = form.slider("Age", min_value=18, max_value=100, step=1)
 #date = form.date_input("Date", value=dt.date.today())
@@ -116,7 +117,8 @@ if submitted:
                             'Tenure (Month)',
                             'Country Exposure',
                             'Country Rating',
-                            'SME Commercial Corporate',
+                            'Residency Status',
+                            #'SME Commercial Corporate',
                             'Corporate Status']]
   
   #---------------------------------------------Details-------------------------------------------------------------
