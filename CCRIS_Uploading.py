@@ -176,7 +176,7 @@ if submitted:
                             'Cumulative Other Charges Payment (Facility Currency)',
                             'Cumulative Other Charges Payment (MYR)',
                             'Rating at Origination',
-                            'Internal Credit Rating (PD/PF)',
+                            'Internal Credit Rating (PD/PF)', #bru
                             #'PD',
                             #'PF',
              'LGD',
@@ -219,7 +219,7 @@ if submitted:
                             'Payment/Repayment Frequency (Cost/Principal)',
                             'Effective cost of borrowings',
                             'Profit/Interest Margin',
-                            'Effective Interest Rate (EIR)',
+                            'Effective Interest Rate (EIR)', #bru
                             #'Average Profit/Interest Rate',
                             'Ta`widh Compensation/Penalty Rate',
                             'Operation Country',
@@ -233,7 +233,7 @@ if submitted:
                             'Residency Status',
                             'Main Residency Status',
                             'Corporate Type',
-                            #'SME Commercial Corporate',
+                            #'SME Commercial Corporate', #tukar
                             'Corporate Status',
                             'Justification on Corporate Status',
                             'Restructured / Rescheduled',

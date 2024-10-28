@@ -56,27 +56,28 @@ st.write('Please fill in the form below to auto run by uploading latest loan dat
 
 #----------------------------Form--------------------------------------------------------------------
 
-form = st.form("Basic form")
+####form = st.form("Basic form")
 #name = form.text_input("Name")
 
 #date_format = form.text_input("Input Date (i.e. 202409):")
 
-year = form.slider("Year", min_value=2020, max_value=2030, step=1)
-month = form.slider("Month", min_value=1, max_value=12, step=1)
+#change form to st
+year = st.slider("Year", min_value=2020, max_value=2030, step=1)
+month = st.slider("Month", min_value=1, max_value=12, step=1)
 #sheet = form.text_input("Input sheet Name ")
 sheet = "Loan Database"
 
 #age = form.slider("Age", min_value=18, max_value=100, step=1)
 #date = form.date_input("Date", value=dt.date.today())
 
-df1 = form.file_uploader(label= "Upload Latest Loan Database:")
+df1 = st.file_uploader(label= "Upload Latest Loan Database:")
 
 if df1:
   df1 = pd.read_excel(df1, sheet_name=sheet, header=1)
   #st.write(df1.head(1))
 
-submitted = form.form_submit_button("Submit")
-if submitted:
+  ####submitted = form.form_submit_button("Submit")
+  ####if submitted:
   #st.write("Submitted")
   #st.write(year, month)
 
@@ -123,10 +124,31 @@ if submitted:
   
   #---------------------------------------------Details-------------------------------------------------------------
   
-  st.write(LDB2)
+  LDB2["EXIM Account No."] = LDB2["EXIM Account No."].astype(str)
+
+  query = st.text_input("Filter dataframe in lowercase")
+
+  if query:
+    mask = LDB2.applymap(lambda x: query in str(x).lower()).any(axis=1)
+    LDB2 = LDB2[mask]
+
+  st.data_editor(
+    LDB2,
+    hide_index=True, 
+    column_order=LDB2#("Customer Name","Status","Amount Approved / Facility Limit (MYR)")
+  ) 
+
+  #filter = st.selectbox('Select Status', options=LDB2["Status"].unique())
+  #filtered_df = LDB2[LDB2["Status"]==filter]
+  #st.dataframe(filtered_df)
+
+  #st.write(LDB2)
 
   st.write("Column checking: ")
   st.write(LDB2.shape)
+
+  st.write("Account duplication checking: ")
+  st.write(LDB2["EXIM Account No."].value_counts())
 
   st.write("")
   st.write("Download file: ")

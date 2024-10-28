@@ -437,6 +437,7 @@ if submitted:
   LDB_prev.columns = LDB_prev.columns.str.replace("\n", "")
 
   appendfinal_ldb = appendfinal.merge(LDB_prev.iloc[np.where(LDB_prev['EXIM Account No.']!="Total")][['EXIM Account No.','Finance(SAP) Number',
+                                              'Customer Name',
                                               'Currency',
                                               'Cumulative Disbursement/Drawdown (Facility Currency)',
                                               'Cumulative Disbursement/Drawdown (MYR)',
@@ -472,7 +473,7 @@ if submitted:
   appendfinal2.sort_values('Total Loans Outstanding (MYR)', ascending=False, inplace=True)#.reset_index()
 
   appendfinal3 = appendfinal2[['EXIM Account No.','Finance(SAP) Number',
-                             #'Customer Name',
+                             'Customer Name',
                              'Currency',
                              'Type of Financing',
                              'Cost/Principal Outstanding (Facility Currency)',

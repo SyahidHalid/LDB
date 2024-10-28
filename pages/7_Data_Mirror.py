@@ -221,12 +221,12 @@ if submitted:
   LDB_prev['Cumulative Other Charges Payment (Facility Currency)'].fillna(0,inplace=True)
   LDB_prev['Cumulative Other Charges Payment (MYR)'].fillna(0,inplace=True)
 
-  merge_ldb = merge.merge(LDB_prev[['Finance(SAP) Number','EXIM Account No.','CIF Number',
+  merge_ldb = merge.merge(LDB_prev[['Finance(SAP) Number','EXIM Account No.','CIF Number','Customer Name',
                                               'Currency',
                                               'Cumulative Other Charges Payment (Facility Currency)',
                                               'Cumulative Other Charges Payment (MYR)']].drop_duplicates('Finance(SAP) Number',keep='first').rename(columns={'Finance(SAP) Number':'Account'}),on=['Account'],how='outer', suffixes=('_x', ''),indicator=True)
 
-  merge1_ldb = merge1.merge(LDB_prev[['Finance(SAP) Number','EXIM Account No.','CIF Number',
+  merge1_ldb = merge1.merge(LDB_prev[['Finance(SAP) Number','EXIM Account No.','CIF Number','Customer Name',
                                               'Currency',
                                               'Cumulative Profit Payment/Interest Repayment (Facility Currency)',
                                               'Cumulative Profit Payment/Interest Repayment (MYR)',
@@ -257,7 +257,7 @@ if submitted:
   merge1_ldb['Cumulative Ta`widh Payment/Penalty Repayment (Facility Currency) New'] = merge1_ldb['Cumulative Ta`widh Payment/Penalty Repayment (Facility Currency)'] +  merge1_ldb['Ta`widh Payment/Penalty Repayment (Facility Currency)'] 
 
   #'Type_of_Financing',
-  merge_ldb = merge_ldb[[ 'CIF Number','EXIM Account No.','Account', 
+  merge_ldb = merge_ldb[[ 'CIF Number','EXIM Account No.','Account', 'Customer Name',
        'Currency',
        'Other_Charges_Payment_FC', 'Other_Charges_Payment_MYR',
        #'Cumulative Other Charges Payment (Facility Currency)',
@@ -265,7 +265,7 @@ if submitted:
        'Cumulative Other Charges Payment (Facility Currency) New',
        'Cumulative Other Charges Payment (MYR) New']]
 
-  merge1_ldb = merge1_ldb[['CIF Number','EXIM Account No.','Account', 'Type_of_Financing',
+  merge1_ldb = merge1_ldb[['CIF Number','EXIM Account No.','Account', 'Type_of_Financing','Customer Name',
        'Currency',
        'Profit_Payment_Interest_Repayment_FC',
        'Profit_Payment_Interest_Repayment_MYR',

@@ -63,7 +63,7 @@ form = st.form("Basic form")
 
 year = form.slider("Year", min_value=2020, max_value=2030, step=1)
 month = form.slider("Month", min_value=1, max_value=12, step=1)
-sheet = form.text_input("Input Sheet Name ")
+sheet = "Loan Database"#form.text_input("Input Sheet Name ")
 
 #age = form.slider("Age", min_value=18, max_value=100, step=1)
 #date = form.date_input("Date", value=dt.date.today())
@@ -95,7 +95,7 @@ if submitted:
   #st.write(df1)
 
   merge_MIA = df1.iloc[np.where((df1['EXIM Account No.']!="Total")&
-                                ~(df1['EXIM Account No.'].isna()))][['CIF Number','EXIM Account No.','Finance(SAP) Number',
+                                ~(df1['EXIM Account No.'].isna()))][['CIF Number','EXIM Account No.','Finance(SAP) Number',"Customer Name",
                    'Nature of Account',
                    'Disbursement/Drawdown Status',
                    'Status',

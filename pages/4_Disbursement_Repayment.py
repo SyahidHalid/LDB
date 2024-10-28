@@ -162,7 +162,7 @@ if submitted:
   #st.write(Rep_Isl_1)
            
   appendfinal_ldb = merge.merge(LDB_prev.iloc[np.where(~(LDB_prev['EXIM Account No.'].isna())&(LDB_prev['EXIM Account No.']!="Total"))][['Finance(SAP) Number','EXIM Account No.','CIF Number',
-                                              'Currency',
+                                              'Customer Name','Currency',
                                               'Cumulative Disbursement/Drawdown (Facility Currency)',
                                               'Cumulative Disbursement/Drawdown (MYR)',
                                               'Cumulative Cost Payment/Principal Repayment (Facility Currency)',
@@ -191,7 +191,7 @@ if submitted:
 
   appendfinal3 = appendfinal2[['CIF Number','EXIM Account No.','Account',
   #'Curr.',
-  'Currency',
+  'Customer Name','Currency',
   'Type_of_Financing',
   'Disbursement_Drawdown_Facility_Currency',
   'Disbursement_Drawdown_MYR',
