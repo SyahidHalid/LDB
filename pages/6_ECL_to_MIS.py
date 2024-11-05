@@ -125,16 +125,16 @@ if submitted:
   LDB_prev.columns = LDB_prev.columns.str.replace("\n", "")
 
   #LDB
-  LAF1_1 = LAF1.merge(LDB_prev[['Finance(SAP) Number','Currency','Status']].drop_duplicates('Finance(SAP) Number',keep='first').rename(columns={'Finance(SAP) Number':'Account_No'}),on=['Account_No'],how='left', suffixes=('_x', '')) #,indicator=True
+  LAF1_1 = LAF1.merge(LDB_prev[['Finance(SAP) Number','Facility Currency','Status']].drop_duplicates('Finance(SAP) Number',keep='first').rename(columns={'Finance(SAP) Number':'Account_No'}),on=['Account_No'],how='left', suffixes=('_x', '')) #,indicator=True
 
 
-  #LAF1_1['Currency'] = LAF1_1['Currency'].str.strip()
-  LAF1_1['Currency'] = LAF1_1['Currency'].astype(str)
+  #LAF1_1['Facility Currency'] = LAF1_1['Facility Currency'].str.strip()
+  LAF1_1['Facility Currency'] = LAF1_1['Facility Currency'].astype(str)
   #MRate['Month'] = MRate['Month'].str.strip()
   MRate['Month'] = MRate['Month'].astype(str)
 
   #Rate
-  LAF2 = LAF1_1.rename(columns={'Currency':'Month'}).merge(MRate[['Month','Curr']], on='Month', how='left')
+  LAF2 = LAF1_1.rename(columns={'Facility Currency':'Month'}).merge(MRate[['Month','Curr']], on='Month', how='left')
 
   LAF2['LAF_ECL_FC'] = LAF2['LAF_ECL_MYR']/LAF2['Curr']
 
@@ -150,13 +150,13 @@ if submitted:
 
 
   #LDB
-  CnC1_1 = CnC1.merge(LDB_prev[['Finance(SAP) Number','Currency','Status']].drop_duplicates('Finance(SAP) Number',keep='first').rename(columns={'Finance(SAP) Number':'Account_No'}),on=['Account_No'],how='left', suffixes=('_x', '')) #,indicator=True
+  CnC1_1 = CnC1.merge(LDB_prev[['Finance(SAP) Number','Facility Currency','Status']].drop_duplicates('Finance(SAP) Number',keep='first').rename(columns={'Finance(SAP) Number':'Account_No'}),on=['Account_No'],how='left', suffixes=('_x', '')) #,indicator=True
 
   #MRate['Month'] = MRate['Month'].str.strip()
   MRate['Month'] = MRate['Month'].astype(str)
 
   #Rate
-  CnC2 = CnC1_1.rename(columns={'Currency':'Month'}).merge(MRate[['Month','Curr']], on='Month', how='left')
+  CnC2 = CnC1_1.rename(columns={'Facility Currency':'Month'}).merge(MRate[['Month','Curr']], on='Month', how='left')
 
   CnC2['CnC_ECL_FC'] = CnC2['CnC_ECL_MYR']/CnC2['Curr']
 

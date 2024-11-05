@@ -72,6 +72,9 @@ D3 = form.text_input("Input Conventional Other Charges Sheet ")
 D4 = form.text_input("Input Islamic Other Charges Sheet ")
 D5 = form.text_input("Input IIS Sheet ")
 D6 = form.text_input("Input PIS Sheet ")
+D7 = form.text_input("Input Penalty Sheet ")
+D8 = form.text_input("Input Tawidh Active Sheet ")
+D9 = form.text_input("Input Tawidh Recovery Sheet ")
 
 
 df1 = form.file_uploader(label= "Upload Latest Data Mirror:")
@@ -83,6 +86,9 @@ if df1:
   Other_payment_isl = pd.read_excel(df1, sheet_name=D4, header=8)
   IIS = pd.read_excel(df1, sheet_name=D5, header=8)
   PIS = pd.read_excel(df1, sheet_name=D6, header=8)
+  Penalty = pd.read_excel(df1, sheet_name=D7, header=8)
+  T_A = pd.read_excel(df1, sheet_name=D8, header=8)
+  T_R = pd.read_excel(df1, sheet_name=D9, header=8)
 
 df2 = form.file_uploader(label= "Upload Loan Database:")
 
@@ -221,13 +227,13 @@ if submitted:
   LDB_prev['Cumulative Other Charges Payment (Facility Currency)'].fillna(0,inplace=True)
   LDB_prev['Cumulative Other Charges Payment (MYR)'].fillna(0,inplace=True)
 
-  merge_ldb = merge.merge(LDB_prev[['Finance(SAP) Number','EXIM Account No.','CIF Number','Customer Name',
-                                              'Currency',
+  merge_ldb = merge.merge(LDB_prev.iloc[np.where(LDB_prev['Finance(SAP) Number']!="nan")][['Finance(SAP) Number','EXIM Account No.','CIF Number','Customer Name',
+                                              'Facility Currency',
                                               'Cumulative Other Charges Payment (Facility Currency)',
                                               'Cumulative Other Charges Payment (MYR)']].drop_duplicates('Finance(SAP) Number',keep='first').rename(columns={'Finance(SAP) Number':'Account'}),on=['Account'],how='outer', suffixes=('_x', ''),indicator=True)
 
-  merge1_ldb = merge1.merge(LDB_prev[['Finance(SAP) Number','EXIM Account No.','CIF Number','Customer Name',
-                                              'Currency',
+  merge1_ldb = merge1.merge(LDB_prev.iloc[np.where(LDB_prev['Finance(SAP) Number']!="nan")][['Finance(SAP) Number','EXIM Account No.','CIF Number','Customer Name',
+                                              'Facility Currency',
                                               'Cumulative Profit Payment/Interest Repayment (Facility Currency)',
                                               'Cumulative Profit Payment/Interest Repayment (MYR)',
                                               'Cumulative Ta`widh Payment/Penalty Repayment (Facility Currency)',
@@ -258,7 +264,7 @@ if submitted:
 
   #'Type_of_Financing',
   merge_ldb = merge_ldb[[ 'CIF Number','EXIM Account No.','Account', 'Customer Name',
-       'Currency',
+       'Facility Currency',
        'Other_Charges_Payment_FC', 'Other_Charges_Payment_MYR',
        #'Cumulative Other Charges Payment (Facility Currency)',
        #'Cumulative Other Charges Payment (MYR)',
@@ -266,19 +272,20 @@ if submitted:
        'Cumulative Other Charges Payment (MYR) New']]
 
   merge1_ldb = merge1_ldb[['CIF Number','EXIM Account No.','Account', 'Type_of_Financing','Customer Name',
-       'Currency',
+       'Facility Currency',
        'Profit_Payment_Interest_Repayment_FC',
        'Profit_Payment_Interest_Repayment_MYR',
        #'Cumulative Profit Payment/Interest Repayment (Facility Currency)',
        #'Cumulative Profit Payment/Interest Repayment (MYR)',
        'Cumulative Profit Payment/Interest Repayment (Facility Currency) New',
-       'Cumulative Profit Payment/Interest Repayment (MYR) New',
-       'Ta`widh Payment/Penalty Repayment (Facility Currency)',
-       'Ta`widh Payment/Penalty Repayment (MYR)',
+       'Cumulative Profit Payment/Interest Repayment (MYR) New'
+       #'Ta`widh Payment/Penalty Repayment (Facility Currency)',
+       #'Ta`widh Payment/Penalty Repayment (MYR)',
        #'Cumulative Ta`widh Payment/Penalty Repayment (Facility Currency)',
        #'Cumulative Ta`widh Payment/Penalty Repayment  (MYR)', 
-       'Cumulative Ta`widh Payment/Penalty Repayment (Facility Currency) New',
-       'Cumulative Ta`widh Payment/Penalty Repayment  (MYR) New']]
+       #'Cumulative Ta`widh Payment/Penalty Repayment (Facility Currency) New',
+       #'Cumulative Ta`widh Payment/Penalty Repayment  (MYR) New'
+       ]]
 
   #combine
   combine = merge_ldb.merge(merge1_ldb[['Account', 
@@ -287,47 +294,119 @@ if submitted:
        #'Cumulative Profit Payment/Interest Repayment (Facility Currency)',
        #'Cumulative Profit Payment/Interest Repayment (MYR)',
        'Cumulative Profit Payment/Interest Repayment (Facility Currency) New',
-       'Cumulative Profit Payment/Interest Repayment (MYR) New',
+       'Cumulative Profit Payment/Interest Repayment (MYR) New'
+       #'Ta`widh Payment/Penalty Repayment (Facility Currency)',
+       #'Ta`widh Payment/Penalty Repayment (MYR)',
+       #'Cumulative Ta`widh Payment/Penalty Repayment (Facility Currency)',
+       #'Cumulative Ta`widh Payment/Penalty Repayment  (MYR)', 
+       #'Cumulative Ta`widh Payment/Penalty Repayment (Facility Currency) New',
+       #'Cumulative Ta`widh Payment/Penalty Repayment  (MYR) New'
+       ]],on="Account", how="outer") #,indicator=True
+
+  #---------------------------------------------Ta'widh-------------------------------------------------------------
+
+  Penalty.columns = Penalty.columns.str.replace("\n", "_")
+  Penalty.columns = Penalty.columns.str.replace(" ", "_")
+  Penalty.columns = Penalty.columns.str.replace(".", "_")
+
+  T_A.columns = T_A.columns.str.replace("\n", "_")
+  T_A.columns = T_A.columns.str.replace(" ", "_")
+  T_A.columns = T_A.columns.str.replace(".", "_")
+  
+  T_R.columns = T_R.columns.str.replace("\n", "_")
+  T_R.columns = T_R.columns.str.replace(" ", "_")
+  T_R.columns = T_R.columns.str.replace(".", "_")
+
+  Penalty.columns = T_A.columns = T_R.columns
+
+  Penalty['Type_of_Financing'] = 'Conventional'
+  T_A['Type_of_Financing'] = 'Islamic'
+  T_R['Type_of_Financing'] = 'Islamic'
+
+  Penalty1 = Penalty.iloc[np.where(~(Penalty.Account.isna()))].fillna(0).groupby(['Account','Type_of_Financing'])[['___Amt_in_loc_cur_','______Amount_in_DC']].sum().reset_index()
+  T_A1 = T_A.iloc[np.where(~(T_A.Account.isna()))].fillna(0).groupby(['Account','Type_of_Financing'])[['___Amt_in_loc_cur_','______Amount_in_DC']].sum().reset_index()
+  T_R1 = T_R.iloc[np.where(~(T_R.Account.isna()))].fillna(0).groupby(['Account','Type_of_Financing'])[['___Amt_in_loc_cur_','______Amount_in_DC']].sum().reset_index()
+
+  Tawidh_Comb = pd.concat([Penalty1, T_A1, T_R1])
+  
+  Tawidh_Comb['___Amt_in_loc_cur_'] = -1*Tawidh_Comb['___Amt_in_loc_cur_']
+  Tawidh_Comb['______Amount_in_DC'] = -1*Tawidh_Comb['______Amount_in_DC']
+
+  Tawidh_Comb.rename(columns={'___Amt_in_loc_cur_':"Ta`widh Payment/Penalty Repayment (MYR)",
+                  '______Amount_in_DC':"Ta`widh Payment/Penalty Repayment (Facility Currency)"},inplace=True)
+
+  
+  Tawidh_Comb['Account'] = Tawidh_Comb['Account'].astype(int)
+  Tawidh_Comb['Account'] = Tawidh_Comb['Account'].astype(str)
+  
+  Tawidh_Comb1 = Tawidh_Comb.merge(LDB_prev.iloc[np.where(LDB_prev['Finance(SAP) Number']!="nan")][['Finance(SAP) Number','EXIM Account No.','CIF Number','Customer Name',
+                                              'Facility Currency',
+                                              'Cumulative Ta`widh Payment/Penalty Repayment (Facility Currency)',
+                                              'Cumulative Ta`widh Payment/Penalty Repayment  (MYR)']].drop_duplicates('Finance(SAP) Number',keep='first').rename(columns={'Finance(SAP) Number':'Account'}),on=['Account'],how='outer', suffixes=('_x', ''),indicator=True)
+
+  Tawidh_Comb1['Ta`widh Payment/Penalty Repayment (MYR)'].fillna(0,inplace=True) 
+  Tawidh_Comb1['Ta`widh Payment/Penalty Repayment (Facility Currency)'].fillna(0,inplace=True)
+
+  Tawidh_Comb1['Cumulative Ta`widh Payment/Penalty Repayment (Facility Currency)'].fillna(0,inplace=True)
+  Tawidh_Comb1['Cumulative Ta`widh Payment/Penalty Repayment  (MYR)'].fillna(0,inplace=True)
+  
+  Tawidh_Comb1['Cumulative Ta`widh Payment/Penalty Repayment  (MYR) New'] = Tawidh_Comb1['Cumulative Ta`widh Payment/Penalty Repayment  (MYR)'] +  Tawidh_Comb1['Ta`widh Payment/Penalty Repayment (MYR)'] 
+  Tawidh_Comb1['Cumulative Ta`widh Payment/Penalty Repayment (Facility Currency) New'] = Tawidh_Comb1['Cumulative Ta`widh Payment/Penalty Repayment (Facility Currency)'] +  Tawidh_Comb1['Ta`widh Payment/Penalty Repayment (Facility Currency)'] 
+
+  Tawidh_Comb1 = Tawidh_Comb1[[ 'CIF Number','EXIM Account No.','Account', 'Customer Name',
+       'Facility Currency',
        'Ta`widh Payment/Penalty Repayment (Facility Currency)',
        'Ta`widh Payment/Penalty Repayment (MYR)',
        #'Cumulative Ta`widh Payment/Penalty Repayment (Facility Currency)',
        #'Cumulative Ta`widh Payment/Penalty Repayment  (MYR)', 
        'Cumulative Ta`widh Payment/Penalty Repayment (Facility Currency) New',
-       'Cumulative Ta`widh Payment/Penalty Repayment  (MYR) New']],on="Account", how="outer") #,indicator=True
+       'Cumulative Ta`widh Payment/Penalty Repayment  (MYR) New']]
 
+  
+  #combine2
+  combine2 = combine.merge(Tawidh_Comb1[['Account', 
+       'Ta`widh Payment/Penalty Repayment (Facility Currency)',
+       'Ta`widh Payment/Penalty Repayment (MYR)',
+       #'Cumulative Ta`widh Payment/Penalty Repayment (Facility Currency)',
+       #'Cumulative Ta`widh Payment/Penalty Repayment  (MYR)', 
+       'Cumulative Ta`widh Payment/Penalty Repayment (Facility Currency) New',
+       'Cumulative Ta`widh Payment/Penalty Repayment  (MYR) New'
+       ]],on="Account", how="outer") #,indicator=True
+  
+  #st.write(combine2['Account'].value_counts())
 
   #---------------------------------------------Download-------------------------------------------------------------
 
   #st.write('Sum Total Loans Outstanding (MYR) : RM'+str(sum))
 
   st.write("")
-  st.write(f"Sum Other Charges Payment (FC) : ${float(sum(combine['Other_Charges_Payment_FC']))}")
+  #st.write(f"Sum Other Charges Payment (FC) : ${float(sum(combine['Other_Charges_Payment_FC']))}")
   st.write(f"Sum Other Charges Payment (MYR) : RM{float(sum(combine['Other_Charges_Payment_MYR']))}")
   st.write("")
-  st.write(f"Sum Cummulative Other Charges Payment (FC) : ${float(sum(combine['Cumulative Other Charges Payment (Facility Currency) New']))}")
+  #st.write(f"Sum Cummulative Other Charges Payment (FC) : ${float(sum(combine['Cumulative Other Charges Payment (Facility Currency) New']))}")
   st.write(f"Sum Cummulative Other Charges Payment (MYR) : RM{float(sum(combine['Cumulative Other Charges Payment (MYR) New']))}")
   st.write("")
-  st.write(f"Sum Profit Payment (FC) : ${float(sum(combine['Profit_Payment_Interest_Repayment_FC']))}")
+  #st.write(f"Sum Profit Payment (FC) : ${float(sum(combine['Profit_Payment_Interest_Repayment_FC']))}")
   st.write(f"Sum Profit Payment (MYR) : RM{float(sum(combine['Profit_Payment_Interest_Repayment_MYR']))}")
   st.write("")
-  st.write(f"Sum Cummulative Profit Payment (FC) : ${float(sum(combine['Cumulative Profit Payment/Interest Repayment (Facility Currency) New']))}")
+  #st.write(f"Sum Cummulative Profit Payment (FC) : ${float(sum(combine['Cumulative Profit Payment/Interest Repayment (Facility Currency) New']))}")
   st.write(f"Sum Cummulative Profit Payment (MYR) : RM{float(sum(combine['Cumulative Profit Payment/Interest Repayment (MYR) New']))}")
   st.write("")
-  st.write(f"Sum Ta`widh Payment (FC) : ${float(sum(combine['Ta`widh Payment/Penalty Repayment (Facility Currency)']))}")
-  st.write(f"Sum Ta`widh Payment (MYR) : RM{float(sum(combine['Ta`widh Payment/Penalty Repayment (MYR)']))}")
+  #st.write(f"Sum Ta`widh Payment (FC) : ${float(sum(combine['Ta`widh Payment/Penalty Repayment (Facility Currency)']))}")
+  st.write(f"Sum Ta`widh Payment (MYR) : RM{float(sum(combine2['Ta`widh Payment/Penalty Repayment (MYR)']))}")
   st.write("")
-  st.write(f"Sum Cumulative Ta`widh Payment (FC) : ${float(sum(combine['Cumulative Ta`widh Payment/Penalty Repayment (Facility Currency) New']))}")
-  st.write(f"Sum Cumulative Ta`widh Payment (MYR) : RM{float(sum(combine['Cumulative Ta`widh Payment/Penalty Repayment  (MYR) New']))}")
+  #st.write(f"Sum Cumulative Ta`widh Payment (FC) : ${float(sum(combine['Cumulative Ta`widh Payment/Penalty Repayment (Facility Currency) New']))}")
+  st.write(f"Sum Cumulative Ta`widh Payment (MYR) : RM{float(sum(combine2['Cumulative Ta`widh Payment/Penalty Repayment  (MYR) New']))}")
 
-
+  st.write("")
   st.write("Row Column Checking: ")
-  st.write(combine.shape)
+  st.write(combine2.shape)
 
-  st.write(combine)
+  st.write(combine2)
 
   st.write("Download file: ")
   st.download_button("Download CSV",
-                   combine.to_csv(index=False),
+                   combine2.to_csv(index=False),
                    file_name='05. Profit Payment & Other Charges Payment '+str(year)+"-"+str(month)+'.csv',
                    mime='text/csv')
   

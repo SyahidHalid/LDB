@@ -198,7 +198,7 @@ if submitted:
 
   LDB_prev.columns = LDB_prev.columns.str.replace("\n", "")
 
-  appendfinal1 = appendfinal.merge(LDB_prev[['Finance(SAP) Number','Currency','Status']].drop_duplicates('Finance(SAP) Number',keep='first').rename(columns={'Finance(SAP) Number':'Account'}),on=['Account'],how='left', suffixes=('_x', '')) #,indicator=True
+  appendfinal1 = appendfinal.merge(LDB_prev[['Finance(SAP) Number','Facility Currency','Status']].drop_duplicates('Finance(SAP) Number',keep='first').rename(columns={'Finance(SAP) Number':'Account'}),on=['Account'],how='left', suffixes=('_x', '')) #,indicator=True
 
 
   #---------------------------------------------Download-------------------------------------------------------------

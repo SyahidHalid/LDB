@@ -154,7 +154,7 @@ if submitted:
   BG3.rename(columns={'Borrower':'Customer Name',
                     'Country':'Country Exposure',
                     'C/I':'Type of Financing',
-                    'Currency':'Currency','Exposure (RM)':'Contingent Liability (MYR)',
+                    'Currency':'Facility Currency','Exposure (RM)':'Contingent Liability (MYR)',
                    'Facility Limit Undrawn (FC)':'Unutilised/Undrawn Amount (FC)','Facility Limit Undrawn (MYR)':'Unutilised/Undrawn Amount (MYR)'},inplace=True)
 
   #=========================================LC==============================================
@@ -174,7 +174,7 @@ if submitted:
   LC3 = LC2.fillna(0).groupby(['CIF Number','EXIM Account No.','Finance(SAP) Number','APPLICANT',
                              'Type of Financing'])[['AMOUNT (RM)']].sum().reset_index().rename(columns={'APPLICANT':'Customer Name',
   'AMOUNT (RM)':'Contingent Liability Letter of Credit (MYR)',
-  'CURR':'Currency',
+  'CURR':'Facility Currency',
   'COUNTRY':'Country Exposure'}) #
 
   #'FOREIGN AMOUNT', 
@@ -187,11 +187,11 @@ if submitted:
   LDB_prev['EXIM Account No.'] = LDB_prev['EXIM Account No.'].astype(str)
 
   appendfinal_ldb = append.merge(LDB_prev[['EXIM Account No.',
-                                              'Currency']],on=['EXIM Account No.'],how='left', suffixes=('_x', ''),indicator=True)
+                                              'Facility Currency']],on=['EXIM Account No.'],how='left', suffixes=('_x', ''),indicator=True)
 
-  appendfinal_ldb['Currency'] = appendfinal_ldb['Currency'].str.strip()
+  appendfinal_ldb['Facility Currency'] = appendfinal_ldb['Facility Currency'].str.strip()
 
-  append1 = appendfinal_ldb.merge(MRate[['Month','Curr']].rename(columns={'Month':'Currency'}), on='Currency', how='left')
+  append1 = appendfinal_ldb.merge(MRate[['Month','Curr']].rename(columns={'Month':'Facility Currency'}), on='Facility Currency', how='left')
 
   append1['Contingent Liability (Facility Currency)'] = append1['Contingent Liability (MYR)']/append1['Curr']
   append1['Contingent Liability Letter of Credit (Facility Currency)'] = append1['Contingent Liability Letter of Credit (MYR)']/append1['Curr']
@@ -203,7 +203,7 @@ if submitted:
                    'Customer Name',
                    #'Country Exposure',
                    'Type of Financing',
-                   'Currency',
+                   'Facility Currency',
                    'Curr',
                    'Unutilised/Undrawn Amount (FC)',
                    'Unutilised/Undrawn Amount (MYR)',

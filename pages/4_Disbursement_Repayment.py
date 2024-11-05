@@ -162,7 +162,7 @@ if submitted:
   #st.write(Rep_Isl_1)
            
   appendfinal_ldb = merge.merge(LDB_prev.iloc[np.where(~(LDB_prev['EXIM Account No.'].isna())&(LDB_prev['EXIM Account No.']!="Total"))][['Finance(SAP) Number','EXIM Account No.','CIF Number',
-                                              'Customer Name','Currency',
+                                              'Customer Name','Facility Currency',
                                               'Cumulative Disbursement/Drawdown (Facility Currency)',
                                               'Cumulative Disbursement/Drawdown (MYR)',
                                               'Cumulative Cost Payment/Principal Repayment (Facility Currency)',
@@ -191,7 +191,7 @@ if submitted:
 
   appendfinal3 = appendfinal2[['CIF Number','EXIM Account No.','Account',
   #'Curr.',
-  'Customer Name','Currency',
+  'Customer Name','Facility Currency',
   'Type_of_Financing',
   'Disbursement_Drawdown_Facility_Currency',
   'Disbursement_Drawdown_MYR',
@@ -213,16 +213,16 @@ if submitted:
 
   #st.write('Sum Total Loans Outstanding (MYR) : RM'+str(sum))
   st.write("")
-  st.write(f"Sum Disbursement Drawdown (FC) : ${float(sum(appendfinal3['Disbursement_Drawdown_Facility_Currency']))}")
+  #st.write(f"Sum Disbursement Drawdown (FC) : ${float(sum(appendfinal3['Disbursement_Drawdown_Facility_Currency']))}")
   st.write(f"Sum Disbursement Drawdown (MYR) : RM{float(sum(appendfinal3['Disbursement_Drawdown_MYR']))}")
   st.write("")
-  st.write(f"Sum Cumulative Disbursement Drawdown (FC) : ${float(sum(appendfinal3['Cumulative Disbursement/Drawdown (Facility Currency) New']))}")
+  #st.write(f"Sum Cumulative Disbursement Drawdown (FC) : ${float(sum(appendfinal3['Cumulative Disbursement/Drawdown (Facility Currency) New']))}")
   st.write(f"Sum Cumulative Disbursement Drawdown (MYR) : RM{float(sum(appendfinal3['Cumulative Disbursement/Drawdown (MYR) New']))}")
   st.write("")
-  st.write(f"Sum Cost Payment Principal Payment (FC) : ${float(sum(appendfinal3['Cost_Payment_Principal_Repayment_Facility_Currency']))}")
+  #st.write(f"Sum Cost Payment Principal Payment (FC) : ${float(sum(appendfinal3['Cost_Payment_Principal_Repayment_Facility_Currency']))}")
   st.write(f"Sum Cost Payment Principal Payment (MYR) : RM{float(sum(appendfinal3['Cost_Payment_Principal_Repayment_MYR']))}")
   st.write("")
-  st.write(f"Sum Cumulative Cost Payment Principal Payment (FC) : ${float(sum(appendfinal3['Cumulative Cost Payment/Principal Repayment (Facility Currency) New']))}")
+  #st.write(f"Sum Cumulative Cost Payment Principal Payment (FC) : ${float(sum(appendfinal3['Cumulative Cost Payment/Principal Repayment (Facility Currency) New']))}")
   st.write(f"Sum Cumulative Cost Payment Principal Payment (MYR) : RM{float(sum(appendfinal3['Cumulative Cost Payment/Principal Repayment (MYR) New']))}")
   
   st.write("")

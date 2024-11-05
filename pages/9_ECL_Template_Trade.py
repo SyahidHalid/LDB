@@ -114,7 +114,7 @@ if submitted:
   merge = T2.merge(LDB_prev[['CIF Number',
                              'EXIM Account No.',
                              'Finance(SAP) Number',
-                             'Currency']].rename(columns={'Currency':'Currency LDB'}), on='Finance(SAP) Number', how='left')
+                             'Facility Currency']].rename(columns={'Facility Currency':'Facility Currency LDB'}), on='Finance(SAP) Number', how='left')
 
   merge1 = merge.merge(MRate[['Month','Curr']].rename(columns={'Month':'Currency'}), on='Currency', how='left')
 
@@ -129,7 +129,7 @@ if submitted:
                    'Finance(SAP) Number',
                    #'Borrower name',
                    'Currency', 
-                   'Currency LDB', 
+                   'Facility Currency LDB', 
                    'Curr',
                    'Unutilised/ Undrawn Amount (Facility Currency)',
                    'Unutilised/ Undrawn Amount (MYR)',
