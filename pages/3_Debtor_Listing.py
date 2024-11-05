@@ -12,6 +12,7 @@ import numpy as np
 #pd.set_option("display.precision", 2) #2 titik perpuluhan
 
 #----------------------nama kat web atas yg newtab (png sahajer)--------------------
+
 st.set_page_config(
   page_title = 'Loan Database - Automation',
   page_icon = "EXIM.png",
@@ -23,7 +24,6 @@ st.set_page_config(
 #with st.echo():
 #  def sum(a, b):
 #    return a + b
-
 #----------------------header
 html_template = """
 <div style="display: flex; align-items: center;">
@@ -61,7 +61,7 @@ form = st.form("Basic form")
 
 #date_format = form.text_input("Input Date (i.e. 202409):")
 
-
+BalanceOS = form.text_input("Input Balance Column ") #"Balance_31stAugust2024"
 
 year = form.slider("Year", min_value=2020, max_value=2030, step=1)
 month = form.slider("Month", min_value=1, max_value=12, step=1)
@@ -69,7 +69,6 @@ month = form.slider("Month", min_value=1, max_value=12, step=1)
 #age = form.slider("Age", min_value=18, max_value=100, step=1)
 #date = form.date_input("Date", value=dt.date.today())
 
-BalanceOS = form.text_input("Input Balance Column ") #"Balance_31stAugust2024"
 D1 = form.text_input("Input Islamic Cost Sheet ")
 D2 = form.text_input("Input Islamic Profit Sheet ")
 D3 = form.text_input("Input Mora Sheet ")
@@ -79,6 +78,9 @@ D6 = form.text_input("Input Conventional Other Charges Sheet ")
 D7 = form.text_input("Input Islamic Other Charges Sheet ")
 D8 = form.text_input("Input IIS Sheet ")
 D9 = form.text_input("Input PIS Sheet ")
+D10 = form.text_input("Input Penalty Sheet ")
+D11 = form.text_input("Input Ta'widh Active Sheet ")
+D12 = form.text_input("Input Ta'widh Recovery Sheet ")
 
 df1 = form.file_uploader(label= "Upload Latest Debtor Listing:")
 
@@ -93,6 +95,9 @@ if df1:
   Others_Isl = pd.read_excel(df1, sheet_name=D7, header=4)
   IIS = pd.read_excel(df1, sheet_name=D8, header=4)
   PIS = pd.read_excel(df1, sheet_name=D9, header=4)
+  Penalty = pd.read_excel(df1, sheet_name=D10, header=4)
+  Ta_A = pd.read_excel(df1, sheet_name=D11, header=4)
+  Ta_R = pd.read_excel(df1, sheet_name=D12, header=4)
 
 
 df2 = form.file_uploader(label= "Upload Month End Rate:")
@@ -142,6 +147,7 @@ if submitted:
   Isl_Cost2['Financing_Type'] = 'Islamic'
   
   #---------------------------------Debtors Listing Islamic (Profit) include adjustment
+  
   Isl_Profit1 = Isl_Profit.iloc[np.where(~Isl_Profit['Customer\nAccount'].isna())]
 
   Isl_Profit1.columns = Isl_Profit1.columns.str.replace("\n", "_")
@@ -199,6 +205,7 @@ if submitted:
   ,'Cost_Payment','Principal','Unearned_Profit','Rental(Ijarah)','Profit_Payment','Interest','Mora']].sum().reset_index()
 
   #---------------------------------Other Debtors Islamic Apr2024
+  
   Others_Isl1 = Others_Isl.iloc[np.where(~Others_Isl.Customer.isna())].fillna(0)
 
   Others_Isl1.columns = Others_Isl1.columns.str.replace("\n", "_")
@@ -226,6 +233,7 @@ if submitted:
   ,'Cost_Payment','Principal','Unearned_Profit','Rental(Ijarah)','Profit_Payment','Interest','Mora','Other_Charges']].sum().reset_index()
 
   #---------------------------------PIS
+  
   PIS1 = PIS.iloc[np.where(~PIS.Customer.isna())].fillna(0)
 
   PIS1.columns = PIS1.columns.str.replace("\n", "_")
@@ -252,6 +260,57 @@ if submitted:
   ,'Currency','Financing_Type','Company'])[['Disbursement'\
   ,'Cost_Payment','Principal','Unearned_Profit','Rental(Ijarah)','Profit_Payment','Interest','Mora','Other_Charges','Interest_in_Suspense']].sum().reset_index()
 
+  #---------------------------------Penalty Islamic
+  
+  Ta_A1 = Ta_A.iloc[np.where(~Ta_A.Customer.isna())].fillna(0)
+
+  Ta_A1.columns = Ta_A1.columns.str.replace("\n", "_")
+  Ta_A1.columns = Ta_A1.columns.str.replace(" ", "")
+
+  Ta_A1.rename(columns={'Customer': 'Customer_Account',
+                            'SearchTerm':'Company',
+                            'Crcy':'Currency',
+                            'Accumulatedbalance':'Penalty_Tawidh'},inplace=True)
+  
+  Ta_A1.Customer_Account = Ta_A1.Customer_Account.astype(int)
+  Ta_A1.Penalty_Tawidh = Ta_A1.Penalty_Tawidh.astype(float)
+
+  Ta_A1 = Ta_A1.fillna(0).groupby(['Company','Customer_Account'])[['Penalty_Tawidh']].sum().reset_index()
+
+  Ta_A1['Financing_Type'] = 'Islamic'
+
+  Ta_R1 = Ta_R.iloc[np.where(~Ta_R.Customer.isna())].fillna(0)
+
+  Ta_R1.columns = Ta_R1.columns.str.replace("\n", "_")
+  Ta_R1.columns = Ta_R1.columns.str.replace(" ", "")
+
+  Ta_R1.rename(columns={'Customer': 'Customer_Account',
+                            'SearchTerm':'Company',
+                            'Crcy':'Currency',
+                            'Accumulatedbalance':'Penalty_Tawidh'},inplace=True)
+  
+  Ta_R1.Customer_Account = Ta_R1.Customer_Account.astype(int)
+  Ta_R1.Penalty_Tawidh = Ta_R1.Penalty_Tawidh.astype(float)
+
+  Ta_R1 = Ta_R1.fillna(0).groupby(['Company','Customer_Account'])[['Penalty_Tawidh']].sum().reset_index()
+
+  Ta_R1['Financing_Type'] = 'Islamic'
+
+  Ta_A1.columns = Ta_R1.columns
+  Ta_AR = pd.concat([Ta_A1,Ta_R1])
+
+  A006_1 = A006.merge(Ta_AR,on=['Customer_Account','Company','Financing_Type'],how='outer',indicator=True)
+
+  NamaTa_AR = A006_1[['Company','Customer_Account','Currency']].drop_duplicates('Customer_Account', keep='first')
+  A006_1 = A006_1.drop(['Company','Currency','_merge'],axis=1).merge(NamaTa_AR,on='Customer_Account',how='left')
+
+  A006_1 = A006_1.fillna(0).groupby(['Customer_Account'\
+  ,'Currency','Financing_Type','Company'])[['Disbursement'\
+  ,'Cost_Payment','Principal','Unearned_Profit','Rental(Ijarah)','Profit_Payment','Interest','Mora','Other_Charges','Interest_in_Suspense',"Penalty_Tawidh"]].sum().reset_index()
+
+  #st.write(sum(A006_1["Penalty_Tawidh"]))
+  #st.write(sum(Ta_AR["Penalty_Tawidh"]))
+  
   #-------------------------------------------------conv--------------------------------------------------
 
   #Debtors Listing Conv Apr 2024
@@ -374,23 +433,55 @@ if submitted:
   ,'Currency','Financing_Type','Company'])[['Disbursement'\
   ,'Repayment','Principal','Interest_For_the_Month','Interest','Profit_Payment','Other_Charges','Interest_in_Suspense']].sum().reset_index()
   
+  #---------------------------------Penalty Conventional
+  
+  Penalty1 = Penalty.iloc[np.where(~Penalty.Customer.isna())].fillna(0)
+
+  Penalty1.columns = Penalty1.columns.str.replace("\n", "_")
+  Penalty1.columns = Penalty1.columns.str.replace(" ", "")
+
+  Penalty1.rename(columns={'Customer': 'Customer_Account',
+                            'SearchTerm':'Company',
+                            'Crcy':'Currency',
+                            'Accumulatedbalance':'Penalty_Tawidh'},inplace=True)
+  
+  Penalty1.Customer_Account = Penalty1.Customer_Account.astype(int)
+  Penalty1.Penalty_Tawidh = Penalty1.Penalty_Tawidh.astype(float)
+
+  Penalty1 = Penalty1.fillna(0).groupby(['Company','Customer_Account'])[['Penalty_Tawidh']].sum().reset_index()
+
+  Penalty1['Financing_Type'] = 'Conventional'
+  
+  
+  C005_1 = C005.merge(Penalty1,on=['Customer_Account','Company','Financing_Type'],how='outer', indicator=True)
+
+  NamaPenal = C005_1[['Company','Customer_Account','Currency']].drop_duplicates('Customer_Account', keep='first')
+  C005_1 = C005_1.drop(['Company','Currency','_merge'],axis=1).merge(NamaPenal,on='Customer_Account',how='left')
+
+  C005_1 = C005_1.fillna(0).groupby(['Customer_Account'\
+  ,'Currency','Financing_Type','Company'])[['Disbursement'\
+  ,'Repayment','Principal','Interest_For_the_Month','Interest','Profit_Payment','Other_Charges','Interest_in_Suspense',"Penalty_Tawidh"]].sum().reset_index()
+  
+  #st.write(sum(C005_1["Penalty_Tawidh"]))
+  #st.write(sum(Penalty1["Penalty_Tawidh"]))
+
   #-------------------------------------------------combine-------------------------------------------------
 
-  C005['Cost_Payment'] = 0
-  C005['Unearned_Profit'] = C005['Interest_For_the_Month']
+  C005_1['Cost_Payment'] = 0
+  C005_1['Unearned_Profit'] = C005['Interest_For_the_Month']
   #C005['Profit_Payment'] = 0
-  C005['Mora'] = 0
-  C005['Rental(Ijarah)'] = 0
+  C005_1['Mora'] = 0
+  C005_1['Rental(Ijarah)'] = 0
 
-  C006 = C005[['Customer_Account','Currency','Financing_Type','Company','Disbursement','Repayment','Cost_Payment',
+  C006 = C005_1[['Customer_Account','Currency','Financing_Type','Company','Disbursement','Repayment','Cost_Payment',
              'Principal','Unearned_Profit','Rental(Ijarah)','Profit_Payment','Interest','Mora','Other_Charges',
-             'Interest_in_Suspense']]
+             'Interest_in_Suspense',"Penalty_Tawidh"]]
 
-  A006['Repayment'] = 0
+  A006_1['Repayment'] = 0
 
-  A007 = A006[['Customer_Account','Currency','Financing_Type','Company','Disbursement','Repayment','Cost_Payment',
+  A007 = A006_1[['Customer_Account','Currency','Financing_Type','Company','Disbursement','Repayment','Cost_Payment',
                'Principal','Unearned_Profit','Rental(Ijarah)','Profit_Payment','Interest','Mora','Other_Charges',
-               'Interest_in_Suspense']]
+               'Interest_in_Suspense',"Penalty_Tawidh"]]
 
   #Isl_Cost1.columns = Isl_Profit1.columns = Mora1.columns = Conv1.columns
   #appendR = pd.concat([Isl_Cost1,Isl_Profit1,Mora1,Conv1] )
@@ -403,9 +494,9 @@ if submitted:
 
   appendfinal = appendR.fillna(0).groupby(['Customer_Account'\
   ,'Currency','Financing_Type','Company'])[['Disbursement'\
-  ,'Repayment','Cost_Payment','Principal','Unearned_Profit','Rental(Ijarah)','Profit_Payment','Interest','Mora','Other_Charges','Interest_in_Suspense']].sum().reset_index()
+  ,'Repayment','Cost_Payment','Principal','Unearned_Profit','Rental(Ijarah)','Profit_Payment','Interest','Mora','Other_Charges','Interest_in_Suspense',"Penalty_Tawidh"]].sum().reset_index()
 
-  appendfinal['Total Loans Outstanding (MYR)'] = appendfinal['Principal'] + appendfinal['Interest'] + appendfinal['Mora'] + appendfinal['Other_Charges']
+  appendfinal['Total Loans Outstanding (MYR)'] = appendfinal['Principal'] + appendfinal['Interest'] + appendfinal['Mora'] + appendfinal['Other_Charges'] + appendfinal['Penalty_Tawidh']
 
   appendfinal['Cost Payment/Principal Repayment (MYR)'] = (-1*appendfinal['Repayment']) + appendfinal['Cost_Payment']
   appendfinal['Accrued Profit/Interest of the month (MYR)'] = appendfinal['Unearned_Profit'] + appendfinal['Rental(Ijarah)'] #+ profit for the month
@@ -420,7 +511,8 @@ if submitted:
                            'Interest':'Cumulative Accrued Profit/Interest (MYR)',
                            'Mora':'Modification of Loss (MYR)',
                            'Other_Charges':'Other Charges (MYR)',
-                           'Interest_in_Suspense':'Income/Interest in Suspense (MYR)'}, inplace=True)
+                           'Interest_in_Suspense':'Income/Interest in Suspense (MYR)',
+                           "Penalty_Tawidh":"Ta`widh Payment/Penalty Repayment (MYR)"}, inplace=True)
 
   appendfinal.drop(columns=['Repayment','Cost_Payment','Unearned_Profit','Rental(Ijarah)'], axis=1, inplace=True)
 
@@ -438,18 +530,18 @@ if submitted:
 
   appendfinal_ldb = appendfinal.merge(LDB_prev.iloc[np.where(LDB_prev['EXIM Account No.']!="Total")][['EXIM Account No.','Finance(SAP) Number',
                                               'Customer Name',
-                                              'Currency',
+                                              'Facility Currency',
                                               'Cumulative Disbursement/Drawdown (Facility Currency)',
                                               'Cumulative Disbursement/Drawdown (MYR)',
                                               'Cumulative Cost Payment/Principal Repayment (Facility Currency)',
                                               'Cumulative Cost Payment/Principal Repayment (MYR)',
                                               'Cumulative Profit Payment/Interest Repayment (Facility Currency)',
-                                              'Cumulative Profit Payment/Interest Repayment (MYR)']].drop_duplicates('Finance(SAP) Number',keep='first'),on=['Finance(SAP) Number'],how='left', suffixes=('_x', ''),indicator=True)
+                                              'Cumulative Profit Payment/Interest Repayment (MYR)']].drop_duplicates('Finance(SAP) Number',keep='first'),on=['Finance(SAP) Number'],how='inner', suffixes=('_x', ''),indicator=True)
 
   appendfinal_ldb['Facility Currency'] = appendfinal_ldb['Facility Currency'].astype(str)
   appendfinal_ldb['Facility Currency'] = appendfinal_ldb['Facility Currency'].str.strip()
 
-  appendfinal2 = appendfinal_ldb.merge(MRate[['Month','Curr']].rename(columns={'Month':'Currency'}), on='Currency', how='left')
+  appendfinal2 = appendfinal_ldb.merge(MRate[['Month','Curr']].rename(columns={'Month':'Facility Currency'}), on='Facility Currency', how='left')
 
   appendfinal2['Cost/Principal Outstanding (Facility Currency)'] = appendfinal2['Cost/Principal Outstanding (MYR)']/appendfinal2['Curr']
   appendfinal2['Accrued Profit/Interest of the month (Facility Currency)'] = appendfinal2['Accrued Profit/Interest of the month (MYR)']/appendfinal2['Curr']
@@ -461,6 +553,7 @@ if submitted:
   appendfinal2['Disbursement/Drawdown (Facility Currency)'] = appendfinal2['Disbursement/Drawdown (MYR)']/appendfinal2['Curr']
   appendfinal2['Cost Payment/Principal Repayment (Facility Currency)'] = appendfinal2['Cost Payment/Principal Repayment (MYR)']/appendfinal2['Curr']
   appendfinal2['Profit Payment/Interest Repayment (Facility Currency)'] = appendfinal2['Profit Payment/Interest Repayment (MYR)']/appendfinal2['Curr']
+  appendfinal2["Ta`widh Payment/Penalty Repayment (Facility Currency)"] = appendfinal2["Ta`widh Payment/Penalty Repayment (MYR)"]/appendfinal2['Curr']
 
 
   appendfinal2['Cumulative Disbursement/Drawdown (Facility Currency) New'] = appendfinal2['Disbursement/Drawdown (Facility Currency)'] +  appendfinal2['Cumulative Disbursement/Drawdown (Facility Currency)'] 
@@ -474,7 +567,7 @@ if submitted:
 
   appendfinal3 = appendfinal2[['EXIM Account No.','Finance(SAP) Number',
                              'Customer Name',
-                             'Currency',
+                             'Facility Currency',
                              'Type of Financing',
                              'Cost/Principal Outstanding (Facility Currency)',
                              'Cost/Principal Outstanding (MYR)',
@@ -488,6 +581,8 @@ if submitted:
                              'Income/Interest in Suspense (MYR)',
                              'Other Charges (Facility Currency)',
                              'Other Charges (MYR)',
+                             "Ta`widh Payment/Penalty Repayment (Facility Currency)",
+                             "Ta`widh Payment/Penalty Repayment (MYR)",
                              'Total Loans Outstanding (Facility Currency)',
                              'Total Loans Outstanding (MYR)',
                             #'Disbursement/Drawdown (Facility Currency)',
@@ -522,6 +617,8 @@ if submitted:
   appendfinal3['Income/Interest in Suspense (MYR)'].fillna(0,inplace=True)
   appendfinal3['Other Charges (Facility Currency)'].fillna(0,inplace=True)
   appendfinal3['Other Charges (MYR)'].fillna(0,inplace=True)
+  appendfinal3["Ta`widh Payment/Penalty Repayment (Facility Currency)"].fillna(0,inplace=True)
+  appendfinal3["Ta`widh Payment/Penalty Repayment (MYR)"].fillna(0,inplace=True)
   appendfinal3['Total Loans Outstanding (Facility Currency)'].fillna(0,inplace=True)
   appendfinal3['Total Loans Outstanding (MYR)'].fillna(0,inplace=True)
 
@@ -534,27 +631,34 @@ if submitted:
   st.write(appendfinal3.shape)
 
   #st.write("-------------------------------------------------------------------------------")
-  st.write(f"Sum Cost/Principal (FC) : ${float(sum(appendfinal3['Cost/Principal Outstanding (Facility Currency)']))}")
+  #st.write(f"Sum Cost/Principal (FC) : ${float(sum(appendfinal3['Cost/Principal Outstanding (Facility Currency)']))}")
   st.write(f"Sum Cost/Principal (MYR) : RM{float(sum(appendfinal3['Cost/Principal Outstanding (MYR)']))}")
   st.write("")
-  st.write(f"Sum Total Loans Outstanding (FC) : ${float(sum(appendfinal3['Accrued Profit/Interest of the month (Facility Currency)']))}")
+  #st.write(f"Sum Total Loans Outstanding (FC) : ${float(sum(appendfinal3['Accrued Profit/Interest of the month (Facility Currency)']))}")
   st.write(f"Sum Total Loans Outstanding (MYR) : RM{float(sum(appendfinal3['Accrued Profit/Interest of the month (MYR)']))}")
   st.write("")
-  st.write(f"Sum Mora (FC) : ${float(sum(appendfinal3['Modification of Loss (Facility Currency)']))}")
+  #st.write(f"Sum Mora (FC) : ${float(sum(appendfinal3['Modification of Loss (Facility Currency)']))}")
   st.write(f"Sum Mora (MYR) : RM{float(sum(appendfinal3['Modification of Loss (MYR)']))}")
   st.write("")
-  st.write(f"Sum Cumulative Accrued (FC) : ${float(sum(appendfinal3['Cumulative Accrued Profit/Interest (Facility Currency)']))}")
+  #st.write(f"Sum Cumulative Accrued (FC) : ${float(sum(appendfinal3['Cumulative Accrued Profit/Interest (Facility Currency)']))}")
   st.write(f"Sum Cumulative Accrued (MYR) : RM{float(sum(appendfinal3['Cumulative Accrued Profit/Interest (MYR)']))}") 
   st.write("")
-  st.write(f"Sum IIS (FC) : ${float(sum(appendfinal3['Income/Interest in Suspense (Facility Currency)']))}")
+  #st.write(f"Sum IIS (FC) : ${float(sum(appendfinal3['Income/Interest in Suspense (Facility Currency)']))}")
   st.write(f"Sum IIS (MYR) : RM{float(sum(appendfinal3['Income/Interest in Suspense (MYR)']))}")
   st.write("")
-  st.write(f"Sum Other Charges (FC) : ${float(sum(appendfinal3['Other Charges (Facility Currency)']))}")
+  #st.write(f"Sum Other Charges (FC) : ${float(sum(appendfinal3['Other Charges (Facility Currency)']))}")
   st.write(f"Sum Other Charges (MYR) : RM{float(sum(appendfinal3['Other Charges (MYR)']))}")
   st.write("")
-  st.write(f"Sum Total Loans Outstanding (FC) : ${float(sum(appendfinal3['Total Loans Outstanding (Facility Currency)']))}")
+  #st.write(f"Sum Total Loans Outstanding (FC) : ${float(sum(appendfinal3['Total Loans Outstanding (Facility Currency)']))}")
+  total_Penal = sum(appendfinal3["Ta`widh Payment/Penalty Repayment (MYR)"])
+  st.write(f"Sum Tawidh Penalty (MYR) : RM{float(total_Penal)}")
+  st.write("")
+  #st.write(f"Sum Total Loans Outstanding (FC) : ${float(sum(appendfinal3['Total Loans Outstanding (Facility Currency)']))}")
   st.write(f"Sum Total Loans Outstanding (MYR) : RM{float(sum(appendfinal3['Total Loans Outstanding (MYR)']))}")
-    
+  st.write("")
+     
+
+
   #st.write('Sum Total Loans Outstanding (MYR) : RM'+str(sum))
 
            
@@ -569,3 +673,144 @@ if submitted:
                    appendfinal3.to_csv(index=False),
                    file_name='01. Debtor Listing '+str(year)+"-"+str(month)+'.csv',
                    mime='text/csv')
+
+  #st.write("Account duplication checking: ")
+  #st.write(appendfinal3["EXIM Account No."].value_counts())
+
+#chart  
+#https://www.youtube.com/watch?app=desktop&v=DFMh6liDRtk
+
+  #fig = px.scatter(df,
+  #x = 'casual', #leh try repayment
+  #y = 'windspeed', #leh try disbursement
+  #color = 'season')
+
+  #fig.update_layout(title="X vs Y",
+  #width=1000,
+  #height=500,
+  #xaxis_title="casual x",
+  #yaxus_title="y windspped",
+  #template="simple_white")
+
+  #fig.show()
+
+
+
+  #fig = px.bar(bar_data, x="month", y="count")
+  #fig.update_layout(bargap=0.0075,
+  #title="bike by month",
+  #width=1000,
+  #height=500,
+  #xaxis_title="month",
+  #yaxis_title="bike",
+  #template="simple_white",
+  #hoverlabel=dict(bgcolor="white",font_size12,font_family="Arial"))
+
+  #fig.update_traces(marker_color="#AAAAAA") #hex code for silver
+  #fig.show()
+
+
+# https://github.com/analyticswithadam/Python/blob/main/Introduction_to_Plotly_Express.ipynb
+# Histogram 
+# https://plotly.com/python/builtin-colorscales/
+
+#average = df['cnt'].mean()
+#fig = px.histogram(df, x = 'cnt',color='season', color_discrete_sequence=px.colors.qualitative.Dark24)
+
+#fig.update_layout(
+#    bargap = 0.005, 
+#    title = 'Rentals',
+#    width = 1000,
+#    height = 500,
+#    xaxis_title = 'Count of Bike Rentals',
+#    yaxis_title = 'Count of Days',
+#    template="simple_white")
+
+#fig.add_shape(type="circle",
+#    xref="x", yref="y",
+#    fillcolor="PaleTurquoise",
+#    x0=3500, y0=70, x1=5500, y1=90,
+#    line_color="LightSeaGreen",
+#)
+
+#fig.add_annotation(x=4500, y=91,
+#            text="Highest Frequency @ Approx 4500",
+#            showarrow=True,
+#            arrowhead=4)
+
+#fig.show()
+
+
+
+#avg = df['cnt'].mean()
+#time = df['dteday'].min()
+
+#fig = px.line(df, x = 'dteday',y='cnt')
+
+#fig.update_layout(
+#    title = 'Bike Rentals 2011 / 2012',
+#    width = 1000,
+#    height = 500,
+#    xaxis_title = 'Count of Bike Rentals',
+#    yaxis_title = 'Date',
+#    template="simple_white")
+
+#fig['data'][0]['line']['color']='#AAAAAA'
+
+#fig.add_shape( # add a horizontal "target" line
+#    type="line", line_color="black", line_width=3, opacity=1, line_dash="dot",
+#    x0=0, x1=1, xref="paper", y0=avg, y1=avg, yref="y"
+#)
+
+#fig.add_annotation(x=time, y=avg,
+#            text="Average Rentals",
+#            showarrow=False,
+#            arrowhead=4,
+#            xshift = 70,
+#            yshift = 10)
+
+
+#fig.show()
+
+
+
+#multiple line
+
+#fig = px.line(df, x = 'dteday',y=['casual','registered'])
+
+#fig['data'][0]['line']['color']="#F2CC8F"
+#fig['data'][1]['line']['color']="#033F63"
+
+#fig.update_layout(
+#    title = 'Casual & Registered Bike Rentals 2011 / 2012',
+#    width = 1000,
+#    height = 500,
+#    xaxis_title = 'Count of Bike Rentals',
+#    yaxis_title = 'Date',
+#    template="simple_white")
+#fig.show()
+     
+
+
+ #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++    
+#  query = st.text_input("Filter dataframe in lowercase")
+
+#fill in the blank
+
+#  if query:
+#    mask = LDB2.applymap(lambda x: query in str(x).lower()).any(axis=1)
+#    LDB2 = LDB2[mask]
+
+#  st.data_editor(
+#    LDB2,
+#    hide_index=True, 
+#    column_order=LDB2#("Customer Name","Status","Amount Approved / Facility Limit (MYR)")
+#  ) 
+
+ #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+ #drop down
+
+  #filter = st.selectbox('Select Status', options=LDB2["Status"].unique())
+  #filtered_df = LDB2[LDB2["Status"]==filter]
+  #st.dataframe(filtered_df)

@@ -104,7 +104,7 @@ if submitted:
                             'Application System Code',
                             'CCRIS Master Account Number',
                             'CCRIS Sub Account Number',
-                            'Currency', #rename Currency
+                            'Facility Currency', #rename Currency
                             'Nature of Account',
                             '1st Disbursement Date / 1st Drawdown Date',
                             '1st Payment/Repayment Date',
@@ -171,6 +171,7 @@ if submitted:
                             'Date of Overdue',
                             'Risk Analyst',
                             'Internal Credit Rating (PD/PF)',
+                            'CCPT Classification',
                             #'PD',
                             #'PF',
                             'LGD',

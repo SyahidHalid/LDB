@@ -115,13 +115,13 @@ if submitted:
                             'Syndicated / Club Deal',
                             'Nature of Account',
                             'Facility',
-                            'Currency',
+                            'Facility Currency',
                             'Type of Financing',
                             'Shariah Contract / Concept',
                             'Status',
                             'Post Approval Stage',
                             'Date of Ready for Utilization (RU)',
-                            'Restructured / Rescheduled(Y/N)',
+                            #'Restructured / Rescheduled(Y/N)',
                             'Amount Approved / Facility Limit (Facility Currency)',
                             'Amount Approved / Facility Limit (MYR)',
                             'Cost/Principal Outstanding (Facility Currency)',
@@ -182,6 +182,7 @@ if submitted:
              'LGD',
                             'CRMS Obligor Risk Rating',
                             #'CRMS CG Rating',
+                            'CCPT Classification',
                             'PD (%)',
                             'LGD (%)',
             'Risk Category',
@@ -255,7 +256,7 @@ if submitted:
                             'Reason for Impairment',
                             'Partial Write off Date',
                             'Write off Date',
-                            'Cancellation Date/Fully Settled Date','Position as At']]
+                            'Cancellation Date/Fully Settled Date','Position as At','Tenure ISS']]
   
   LDB2['Finance(SAP) Number'] = LDB2['Finance(SAP) Number'].astype(str)
 
@@ -282,13 +283,13 @@ if submitted:
                             'Syndicated / Club Deal',
                             'Nature of Account',
                             'Facility',
-                            'Currency',
+                            'Facility Currency',
                             'Type of Financing',
                             'Shariah Contract / Concept',
                             'Status',
                             'Post Approval Stage',
                             'Date of Ready for Utilization (RU)',
-                            'Restructured / Rescheduled(Y/N)',
+                            #'Restructured / Rescheduled(Y/N)',
                             'Amount Approved / Facility Limit (Facility Currency)',
                             'Amount Approved / Facility Limit (MYR)',
                             'Cost/Principal Outstanding (Facility Currency)',
@@ -349,6 +350,7 @@ if submitted:
              'LGD',
                             'CRMS Obligor Risk Rating',
                             #'CRMS CG Rating',
+                            'CCPT Classification',
                             'PD (%)',
                             'LGD (%)',
             'Risk Category',
@@ -422,7 +424,7 @@ if submitted:
                             'Reason for Impairment',
                             'Partial Write off Date',
                             'Write off Date',
-                            'Cancellation Date/Fully Settled Date','Position as At']]
+                            'Cancellation Date/Fully Settled Date','Position as At','Tenure ISS']]
   LDB4.fillna(0,inplace=True)
   
   #---------------------------------------------Details-------------------------------------------------------------

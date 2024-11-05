@@ -118,13 +118,16 @@ if df1:
                             'Tenure (Month)',
                             'Country Exposure',
                             'Country Rating',
-                            'Residency Status',
+                            #'Residency Status',
+                            'CCPT Classification',
                             #'SME Commercial Corporate',
                             'Corporate Status']]
   
   #---------------------------------------------Details-------------------------------------------------------------
   
+  LDB2["EXIM Account No."].fillna("Not Applicable Account", inplace=True)
   LDB2["EXIM Account No."] = LDB2["EXIM Account No."].astype(str)
+
 
   query = st.text_input("Filter dataframe in lowercase")
 
