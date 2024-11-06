@@ -99,6 +99,8 @@ if submitted:
   LDB_prev = LDB_prev.iloc[np.where(LDB_prev['EXIM Account No.']!="Total")]
   LDB_prev['Finance(SAP) Number'] = LDB_prev['Finance(SAP) Number'].astype(str)
 
+
+
   T2 = T1.iloc[np.where(~T1.Currency.isna())][['Account No',
                                                'Borrower name',
                                                'Undrawn amount (base currency)',

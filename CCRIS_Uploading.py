@@ -441,10 +441,6 @@ if submitted:
                    file_name='Loan Database as at '+str(year)+"-"+str(month)+' - CCRIS RAW.csv',
                    mime='text/csv')
   
-
-
-
-
   #st.write("Amount checking: ")
   #st.write(LDB4.fillna(0).groupby(['Status'])[['Amount Approved / Facility Limit (MYR)',
   #                          'Cost/Principal Outstanding (MYR)',

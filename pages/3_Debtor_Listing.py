@@ -287,17 +287,20 @@ if submitted:
   Ta_R1.rename(columns={'Customer': 'Customer_Account',
                             'SearchTerm':'Company',
                             'Crcy':'Currency',
-                            'Accumulatedbalance':'Penalty_Tawidh'},inplace=True)
+                            'Accumulatedbalance':'Recovery_Tawidh'},inplace=True)
   
   Ta_R1.Customer_Account = Ta_R1.Customer_Account.astype(int)
-  Ta_R1.Penalty_Tawidh = Ta_R1.Penalty_Tawidh.astype(float)
+  Ta_R1.Recovery_Tawidh = Ta_R1.Recovery_Tawidh.astype(float)
 
-  Ta_R1 = Ta_R1.fillna(0).groupby(['Company','Customer_Account'])[['Penalty_Tawidh']].sum().reset_index()
+  Ta_R1 = Ta_R1.fillna(0).groupby(['Company','Customer_Account'])[['Recovery_Tawidh']].sum().reset_index()
 
   Ta_R1['Financing_Type'] = 'Islamic'
 
-  Ta_A1.columns = Ta_R1.columns
+  #Ta_A1.columns = Ta_R1.columns
   Ta_AR = pd.concat([Ta_A1,Ta_R1])
+  Ta_AR.fillna(0, inplace=True)
+
+  #st.write(Ta_AR)
 
   A006_1 = A006.merge(Ta_AR,on=['Customer_Account','Company','Financing_Type'],how='outer',indicator=True)
 
@@ -306,7 +309,7 @@ if submitted:
 
   A006_1 = A006_1.fillna(0).groupby(['Customer_Account'\
   ,'Currency','Financing_Type','Company'])[['Disbursement'\
-  ,'Cost_Payment','Principal','Unearned_Profit','Rental(Ijarah)','Profit_Payment','Interest','Mora','Other_Charges','Interest_in_Suspense',"Penalty_Tawidh"]].sum().reset_index()
+  ,'Cost_Payment','Principal','Unearned_Profit','Rental(Ijarah)','Profit_Payment','Interest','Mora','Other_Charges','Interest_in_Suspense',"Penalty_Tawidh",'Recovery_Tawidh']].sum().reset_index()
 
   #st.write(sum(A006_1["Penalty_Tawidh"]))
   #st.write(sum(Ta_AR["Penalty_Tawidh"]))
@@ -466,7 +469,7 @@ if submitted:
   #st.write(sum(Penalty1["Penalty_Tawidh"]))
 
   #-------------------------------------------------combine-------------------------------------------------
-
+  C005_1['Recovery_Tawidh'] = 0
   C005_1['Cost_Payment'] = 0
   C005_1['Unearned_Profit'] = C005['Interest_For_the_Month']
   #C005['Profit_Payment'] = 0
@@ -475,13 +478,13 @@ if submitted:
 
   C006 = C005_1[['Customer_Account','Currency','Financing_Type','Company','Disbursement','Repayment','Cost_Payment',
              'Principal','Unearned_Profit','Rental(Ijarah)','Profit_Payment','Interest','Mora','Other_Charges',
-             'Interest_in_Suspense',"Penalty_Tawidh"]]
+             'Interest_in_Suspense',"Penalty_Tawidh",'Recovery_Tawidh']]
 
   A006_1['Repayment'] = 0
 
   A007 = A006_1[['Customer_Account','Currency','Financing_Type','Company','Disbursement','Repayment','Cost_Payment',
                'Principal','Unearned_Profit','Rental(Ijarah)','Profit_Payment','Interest','Mora','Other_Charges',
-               'Interest_in_Suspense',"Penalty_Tawidh"]]
+               'Interest_in_Suspense',"Penalty_Tawidh",'Recovery_Tawidh']]
 
   #Isl_Cost1.columns = Isl_Profit1.columns = Mora1.columns = Conv1.columns
   #appendR = pd.concat([Isl_Cost1,Isl_Profit1,Mora1,Conv1] )
@@ -494,7 +497,7 @@ if submitted:
 
   appendfinal = appendR.fillna(0).groupby(['Customer_Account'\
   ,'Currency','Financing_Type','Company'])[['Disbursement'\
-  ,'Repayment','Cost_Payment','Principal','Unearned_Profit','Rental(Ijarah)','Profit_Payment','Interest','Mora','Other_Charges','Interest_in_Suspense',"Penalty_Tawidh"]].sum().reset_index()
+  ,'Repayment','Cost_Payment','Principal','Unearned_Profit','Rental(Ijarah)','Profit_Payment','Interest','Mora','Other_Charges','Interest_in_Suspense',"Penalty_Tawidh",'Recovery_Tawidh']].sum().reset_index()
 
   appendfinal['Total Loans Outstanding (MYR)'] = appendfinal['Principal'] + appendfinal['Interest'] + appendfinal['Mora'] + appendfinal['Other_Charges'] + appendfinal['Penalty_Tawidh']
 
@@ -512,7 +515,8 @@ if submitted:
                            'Mora':'Modification of Loss (MYR)',
                            'Other_Charges':'Other Charges (MYR)',
                            'Interest_in_Suspense':'Income/Interest in Suspense (MYR)',
-                           "Penalty_Tawidh":"Ta`widh Payment/Penalty Repayment (MYR)"}, inplace=True)
+                           "Penalty_Tawidh":"Ta`widh Payment/Penalty Repayment (MYR)",
+                           'Recovery_Tawidh':"Ta'widh (Compensation) (MYR)"}, inplace=True)
 
   appendfinal.drop(columns=['Repayment','Cost_Payment','Unearned_Profit','Rental(Ijarah)'], axis=1, inplace=True)
 
@@ -554,6 +558,7 @@ if submitted:
   appendfinal2['Cost Payment/Principal Repayment (Facility Currency)'] = appendfinal2['Cost Payment/Principal Repayment (MYR)']/appendfinal2['Curr']
   appendfinal2['Profit Payment/Interest Repayment (Facility Currency)'] = appendfinal2['Profit Payment/Interest Repayment (MYR)']/appendfinal2['Curr']
   appendfinal2["Ta`widh Payment/Penalty Repayment (Facility Currency)"] = appendfinal2["Ta`widh Payment/Penalty Repayment (MYR)"]/appendfinal2['Curr']
+  appendfinal2["Ta'widh (Compensation) (Facility Currency)"] = appendfinal2["Ta'widh (Compensation) (MYR)"]/appendfinal2['Curr']
 
 
   appendfinal2['Cumulative Disbursement/Drawdown (Facility Currency) New'] = appendfinal2['Disbursement/Drawdown (Facility Currency)'] +  appendfinal2['Cumulative Disbursement/Drawdown (Facility Currency)'] 
@@ -583,6 +588,8 @@ if submitted:
                              'Other Charges (MYR)',
                              "Ta`widh Payment/Penalty Repayment (Facility Currency)",
                              "Ta`widh Payment/Penalty Repayment (MYR)",
+                             "Ta'widh (Compensation) (Facility Currency)",
+                             "Ta'widh (Compensation) (MYR)",
                              'Total Loans Outstanding (Facility Currency)',
                              'Total Loans Outstanding (MYR)',
                             #'Disbursement/Drawdown (Facility Currency)',
@@ -619,6 +626,8 @@ if submitted:
   appendfinal3['Other Charges (MYR)'].fillna(0,inplace=True)
   appendfinal3["Ta`widh Payment/Penalty Repayment (Facility Currency)"].fillna(0,inplace=True)
   appendfinal3["Ta`widh Payment/Penalty Repayment (MYR)"].fillna(0,inplace=True)
+  appendfinal3["Ta'widh (Compensation) (Facility Currency)"].fillna(0,inplace=True)
+  appendfinal3["Ta'widh (Compensation) (MYR)"].fillna(0,inplace=True)
   appendfinal3['Total Loans Outstanding (Facility Currency)'].fillna(0,inplace=True)
   appendfinal3['Total Loans Outstanding (MYR)'].fillna(0,inplace=True)
 
@@ -652,6 +661,10 @@ if submitted:
   #st.write(f"Sum Total Loans Outstanding (FC) : ${float(sum(appendfinal3['Total Loans Outstanding (Facility Currency)']))}")
   total_Penal = sum(appendfinal3["Ta`widh Payment/Penalty Repayment (MYR)"])
   st.write(f"Sum Tawidh Penalty (MYR) : RM{float(total_Penal)}")
+  st.write("")
+  #st.write(f"Sum Total Loans Outstanding (FC) : ${float(sum(appendfinal3['Total Loans Outstanding (Facility Currency)']))}")
+  total_Penal_R = sum(appendfinal3["Ta'widh (Compensation) (MYR)"])
+  st.write(f"Sum Tawidh Recovery (MYR) : RM{float(total_Penal_R)}")
   st.write("")
   #st.write(f"Sum Total Loans Outstanding (FC) : ${float(sum(appendfinal3['Total Loans Outstanding (Facility Currency)']))}")
   st.write(f"Sum Total Loans Outstanding (MYR) : RM{float(sum(appendfinal3['Total Loans Outstanding (MYR)']))}")

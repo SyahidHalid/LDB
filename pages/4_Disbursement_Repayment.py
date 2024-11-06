@@ -211,6 +211,9 @@ if submitted:
   pd.set_option("display.precision", 2) #2 titik perpuluhan
 
 
+
+
+
   #st.write('Sum Total Loans Outstanding (MYR) : RM'+str(sum))
   st.write("")
   #st.write(f"Sum Disbursement Drawdown (FC) : ${float(sum(appendfinal3['Disbursement_Drawdown_Facility_Currency']))}")

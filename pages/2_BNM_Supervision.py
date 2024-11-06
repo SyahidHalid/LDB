@@ -125,6 +125,9 @@ if df1:
   
   #---------------------------------------------Details-------------------------------------------------------------
   
+
+
+  
   LDB2["EXIM Account No."].fillna("Not Applicable Account", inplace=True)
   LDB2["EXIM Account No."] = LDB2["EXIM Account No."].astype(str)
 

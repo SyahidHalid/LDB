@@ -126,6 +126,8 @@ if submitted:
   merge1 = merge1.rename(columns={'Undrawn amount (base currency)':'Unutilised/ Undrawn Amount (Facility Currency)',
                                'Profit Rate/ EIR':'Average Profit/Interest Rate'})
 
+
+
   merge1 = merge1.fillna(0)[['CIF Number',
                    'EXIM Account No.',
                    'Finance(SAP) Number',

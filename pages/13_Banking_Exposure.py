@@ -11,6 +11,8 @@ import numpy as np
 #pd.set_option("display.max_rows", 100)
 #pd.set_option("display.precision", 2) #2 titik perpuluhan
 
+
+
 #----------------------nama kat web atas yg newtab (png sahajer)--------------------
 st.set_page_config(
   page_title = 'Loan Database - Automation',

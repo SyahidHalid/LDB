@@ -139,6 +139,8 @@ if submitted:
   IA_IIS.loc[IA_IIS.Borrower=="PT Mahakarya Inti Buana",'Loan_Acc_']='500039'
   IA_IIS['Loan_Acc_'].fillna(0, inplace=True)
 
+
+  
   IA_IIS_1 = IA_IIS.iloc[np.where((~(IA_IIS.Loan_Acc_==0))&~(IA_IIS.Ccy.isna()))].fillna(0).groupby(['Loan_Acc_','Ccy','Borrower'])[['IIS_(RM)_'+May_RM,'IIS_(FC)_'+May_RM]].sum().reset_index()
 
   #IA_IIS_1['Loan_Acc_'] = IA_IIS_1['Loan_Acc_'].astype(int)
@@ -219,6 +221,9 @@ if submitted:
            
   #st.write("SAP Duplication Checking: ")
   #st.write(appendfinal3['Account'].value_counts())
+
+
+
 
   st.write("Download file: ")
   st.download_button("Download CSV",
