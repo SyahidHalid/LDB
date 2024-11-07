@@ -133,10 +133,10 @@ if submitted:
   Isl_Cost1[BalanceOS] = Isl_Cost1[BalanceOS].astype(float)
 
   Isl_Cost1.rename(columns={"Disbursement":"Disbursement - old"}, inplace=True)
-  Isl_Cost1['Disbursement'] = Isl_Cost1['Disbursement - old'].fillna(0) + Isl_Cost1['Adjustment/_Capitalisation'].fillna(0)
+  Isl_Cost1['Disbursement'] = Isl_Cost1['Disbursement - old'].fillna(0)# + Isl_Cost1['Adjustment/_Capitalisation'].fillna(0)
 
   Isl_Cost1.rename(columns={"Cost_Payment":"Cost_Payment - old"}, inplace=True)
-  Isl_Cost1['Cost_Payment'] = Isl_Cost1['Cost_Payment - old'].fillna(0) - Isl_Cost1['Adjustment/_Capitalisation.1'].fillna(0)
+  Isl_Cost1['Cost_Payment'] = Isl_Cost1['Cost_Payment - old'].fillna(0)# - Isl_Cost1['Adjustment/_Capitalisation.1'].fillna(0)
 
   Isl_Cost2 = Isl_Cost1.fillna(0).groupby(['Company','Customer_Account'\
   ,'Currency'])[['Disbursement'\
@@ -159,7 +159,7 @@ if submitted:
   Isl_Profit1[BalanceOS] = Isl_Profit1[BalanceOS].astype(float)
 
   Isl_Profit1.rename(columns={"Profit_Payment":"Profit_Payment - old"}, inplace=True)
-  Isl_Profit1['Profit_Payment'] = Isl_Profit1['Profit_Payment - old'].fillna(0) - Isl_Profit1['Adjustment/_Capitalisation.1'].fillna(0)
+  Isl_Profit1['Profit_Payment'] = Isl_Profit1['Profit_Payment - old'].fillna(0)# - Isl_Profit1['Adjustment/_Capitalisation.1'].fillna(0)
 
   Isl_Profit2 = Isl_Profit1.fillna(0).groupby(['Company','Customer_Account'\
   ,'Currency'])[['Unearned_Profit','Rental(Ijarah)','Profit_Payment',BalanceOS]].sum().reset_index()
@@ -333,10 +333,10 @@ if submitted:
   #[['Customer_Account','Company','Currency','Disbursement','Repayment','Principal']]
 
   Conv1.rename(columns={"Disbursement":"Disbursement - old"}, inplace=True)
-  Conv1['Disbursement'] = Conv1['Disbursement - old'].fillna(0) + Conv1['AdjustmentCapitalization'].fillna(0)
+  Conv1['Disbursement'] = Conv1['Disbursement - old'].fillna(0)# + Conv1['AdjustmentCapitalization'].fillna(0)
 
   Conv1.rename(columns={"Repayment":"Repayment - old"}, inplace=True)
-  Conv1['Repayment'] = Conv1['Repayment - old'].fillna(0) - Conv1['AdjustmentCapitalization.1'].fillna(0)
+  Conv1['Repayment'] = Conv1['Repayment - old'].fillna(0)# - Conv1['AdjustmentCapitalization.1'].fillna(0)
 
   Conv1 = Conv1.fillna(0).groupby(['Company','Customer_Account'\
   ,'Currency'])[['Disbursement'\
@@ -593,16 +593,16 @@ if submitted:
                              'Total Loans Outstanding (Facility Currency)',
                              'Total Loans Outstanding (MYR)',
                             #'Disbursement/Drawdown (Facility Currency)',
-                            #'Disbursement/Drawdown (MYR)',
+                            'Disbursement/Drawdown (MYR)',
                              #'Cumulative Disbursement/Drawdown (Facility Currency) New',
                              #'Cumulative Disbursement/Drawdown (Facility Currency)',
-                             #'Cumulative Disbursement/Drawdown (MYR) New',
+                            #'Cumulative Disbursement/Drawdown (MYR) New',
                              #'Cumulative Disbursement/Drawdown (MYR)',
                             #'Cost Payment/Principal Repayment (Facility Currency)',
-                            #'Cost Payment/Principal Repayment (MYR)',
+                            'Cost Payment/Principal Repayment (MYR)',
                              #'Cumulative Cost Payment/Principal Repayment (Facility Currency) New',
                              #'Cumulative Cost Payment/Principal Repayment (Facility Currency)',
-                             #'Cumulative Cost Payment/Principal Repayment (MYR) New',
+                            #'Cumulative Cost Payment/Principal Repayment (MYR) New',
                              #'Cumulative Cost Payment/Principal Repayment (MYR)',
                             #'Profit Payment/Interest Repayment (Facility Currency)',
                             #'Profit Payment/Interest Repayment (MYR)',
@@ -630,6 +630,11 @@ if submitted:
   appendfinal3["Ta'widh (Compensation) (MYR)"].fillna(0,inplace=True)
   appendfinal3['Total Loans Outstanding (Facility Currency)'].fillna(0,inplace=True)
   appendfinal3['Total Loans Outstanding (MYR)'].fillna(0,inplace=True)
+
+  appendfinal3["Disbursement/Drawdown (MYR)"].fillna(0,inplace=True)
+  #appendfinal3["Cumulative Disbursement/Drawdown (MYR) New"].fillna(0,inplace=True)
+  appendfinal3['Cost Payment/Principal Repayment (MYR)'].fillna(0,inplace=True)
+  #appendfinal3['Cumulative Cost Payment/Principal Repayment (MYR) New'].fillna(0,inplace=True)
 
 
   
@@ -669,7 +674,19 @@ if submitted:
   #st.write(f"Sum Total Loans Outstanding (FC) : ${float(sum(appendfinal3['Total Loans Outstanding (Facility Currency)']))}")
   st.write(f"Sum Total Loans Outstanding (MYR) : RM{float(sum(appendfinal3['Total Loans Outstanding (MYR)']))}")
   st.write("")
-     
+
+  #st.write(f"Sum Total Loans Outstanding (FC) : ${float(sum(appendfinal3['Total Loans Outstanding (Facility Currency)']))}")
+  st.write(f"Sum Total Disbursement Drawdown (MYR) : RM{float(sum(appendfinal3['Disbursement/Drawdown (MYR)']))}")
+  st.write("")
+  #st.write(f"Sum Total Loans Outstanding (FC) : ${float(sum(appendfinal3['Total Loans Outstanding (Facility Currency)']))}")
+  #st.write(f"Sum Total Cumulative Disbursement Drawdown (MYR) : RM{float(sum(appendfinal3['Cumulative Disbursement/Drawdown (MYR) New']))}")
+  #st.write("")     
+  #st.write(f"Sum Total Loans Outstanding (FC) : ${float(sum(appendfinal3['Total Loans Outstanding (Facility Currency)']))}")
+  st.write(f"Sum Total Cost Payment (MYR) : RM{float(sum(appendfinal3['Cost Payment/Principal Repayment (MYR)']))}")
+  st.write("")
+  #st.write(f"Sum Total Loans Outstanding (FC) : ${float(sum(appendfinal3['Total Loans Outstanding (Facility Currency)']))}")
+  #st.write(f"Sum Total Cumulative Cost Payment (MYR) : RM{float(sum(appendfinal3['Cumulative Cost Payment/Principal Repayment (MYR) New']))}")
+  #st.write("")
 
 
   #st.write('Sum Total Loans Outstanding (MYR) : RM'+str(sum))

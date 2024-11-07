@@ -213,7 +213,8 @@ if submitted:
   st.write("")
   st.write(f"Sum ECL C&C (FC) : ${float(sum(appendfinal1['CnC_ECL_FC']))}")
   st.write(f"Sum ECL C&C (MYR) : RM{float(sum(appendfinal1['CnC_ECL_MYR']))}")
-
+  
+  st.write("")
   st.write("Row Column Checking: ")
   st.write(appendfinal1.shape)
 
@@ -221,9 +222,6 @@ if submitted:
            
   #st.write("SAP Duplication Checking: ")
   #st.write(appendfinal3['Account'].value_counts())
-
-
-
 
   st.write("Download file: ")
   st.download_button("Download CSV",
