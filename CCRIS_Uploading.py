@@ -99,6 +99,9 @@ if submitted:
   LDB1['Percentage of Total Banking Exposure(MYR) to SCEL (MYR)'] = ""
   LDB1['Percentage of Total Overall Banking Exposure (MYR) to SCEL (MYR) (%)'] = ""
   LDB1['EXIM Main Sector'] = ""
+  LDB1['SME Commercial Corporate'] = ""
+  LDB1['PF'] = ""
+  LDB1['Risk Analyst'] = ""
 
   LDB2 = LDB1[['CIF Number',
              'EXIM Account No.',
@@ -176,13 +179,11 @@ if submitted:
                             'Cumulative Other Charges Payment (Facility Currency)',
                             'Cumulative Other Charges Payment (MYR)',
                             'Rating at Origination',
-                            'Internal Credit Rating (PD/PF)', #bru
-                            #'PD',
-                            #'PF',
+                            'Internal Credit Rating (PD/PF)', #bru  #'PD',
+                            'PF',
              'LGD',
                             'CRMS Obligor Risk Rating',
-                            #'CRMS CG Rating',
-                            'CCPT Classification',
+                            #'CRMS CG Rating', 'CCPT Classification',
                             'PD (%)',
                             'LGD (%)',
             'Risk Category',
@@ -220,8 +221,7 @@ if submitted:
                             'Payment/Repayment Frequency (Cost/Principal)',
                             'Effective cost of borrowings',
                             'Profit/Interest Margin',
-                            'Effective Interest Rate (EIR)', #bru
-                            #'Average Profit/Interest Rate',
+                            'Effective Interest Rate (EIR)', #bru  #'Average Profit/Interest Rate',
                             'Ta`widh Compensation/Penalty Rate',
                             'Operation Country',
                             'Country Exposure',
@@ -231,10 +231,9 @@ if submitted:
                             'Classification of Entity / Customer Type',
                             'Entity / Customer Type',
                             'Classification of Residency Status',
-                            'Residency Status',
-                            'Main Residency Status',
+                            'Residency Status',#'Main Residency Status',
                             'Corporate Type',
-                            #'SME Commercial Corporate', #tukar
+                            'SME Commercial Corporate', #tukar
                             'Corporate Status',
                             'Justification on Corporate Status',
                             'Restructured / Rescheduled',
@@ -243,7 +242,7 @@ if submitted:
                             'Reason',
                             #'Date Untagged from R&R',
                             #'Justification for Untagged',
-                            'Frequency',
+                            'Frequency of R&R',
                             'Date of Overdue',
              'Overdue (Days)',
              'Month in Arrears',
@@ -256,18 +255,20 @@ if submitted:
                             'Reason for Impairment',
                             'Partial Write off Date',
                             'Write off Date',
-                            'Cancellation Date/Fully Settled Date','Position as At','Tenure ISS']]
+                            'Cancellation Date/Fully Settled Date','Position as At']]
   
   LDB2['Finance(SAP) Number'] = LDB2['Finance(SAP) Number'].astype(str)
 
   LDB2.loc[(LDB2['Finance(SAP) Number'].isin(['BG-I','BG','500724'])),'Expected Credit Loss C&C (ECL) (MYR)'] = 0
   LDB2.loc[(LDB2['Finance(SAP) Number'].isin(['BG-I','BG','500724'])),'Expected Credit Loss C&C (ECL) (Facility Currency)'] = 0
 
-  LDB2['Expected Credit Loss LAF (ECL) (MYR) 2'] = LDB2['Expected Credit Loss LAF (ECL) (MYR)'] + LDB2['Expected Credit Loss C&C (ECL) (MYR)']
-  LDB2['Expected Credit Loss (ECL) LAF (Facility Currency) 2'] = LDB2['Expected Credit Loss (ECL) LAF (Facility Currency)'] + LDB2['Expected Credit Loss C&C (ECL) (Facility Currency)']
+  LDB2['Expected Credit Loss LAF (ECL) (MYR) 2'] = LDB2['Expected Credit Loss LAF (ECL) (MYR)'].fillna(0) + LDB2['Expected Credit Loss C&C (ECL) (MYR)'].fillna(0)
+  LDB2['Expected Credit Loss (ECL) LAF (Facility Currency) 2'] = LDB2['Expected Credit Loss (ECL) LAF (Facility Currency)'].fillna(0) + LDB2['Expected Credit Loss C&C (ECL) (Facility Currency)'].fillna(0)
 
   LDB3 = LDB2.drop(['Expected Credit Loss C&C (ECL) (MYR)','Expected Credit Loss C&C (ECL) (Facility Currency)'],axis=1)
   
+  #st.write(LDB2.iloc[np.where(LDB2['Finance(SAP) Number'].isin(['500204']))])
+
   LDB4 = LDB3[['CIF Number',
              'EXIM Account No.',
                      'Application System Code',
@@ -344,13 +345,11 @@ if submitted:
                             'Cumulative Other Charges Payment (Facility Currency)',
                             'Cumulative Other Charges Payment (MYR)',
                             'Rating at Origination',
-                            'Internal Credit Rating (PD/PF)',
-                            #'PD',
-                            #'PF',
+                            'Internal Credit Rating (PD/PF)',  #'PD',
+                            'PF',
              'LGD',
                             'CRMS Obligor Risk Rating',
-                            #'CRMS CG Rating',
-                            'CCPT Classification',
+                            #'CRMS CG Rating', 'CCPT Classification',
                             'PD (%)',
                             'LGD (%)',
             'Risk Category',
@@ -388,8 +387,7 @@ if submitted:
                             'Payment/Repayment Frequency (Cost/Principal)',
                             'Effective cost of borrowings',
                             'Profit/Interest Margin',
-                            'Effective Interest Rate (EIR)',
-                            #'Average Profit/Interest Rate',
+                            'Effective Interest Rate (EIR)', #'Average Profit/Interest Rate',
                             'Ta`widh Compensation/Penalty Rate',
                             'Operation Country',
                             'Country Exposure',
@@ -399,10 +397,9 @@ if submitted:
                             'Classification of Entity / Customer Type',
                             'Entity / Customer Type',
                             'Classification of Residency Status',
-                            'Residency Status',
-                            'Main Residency Status',
+                            'Residency Status',#'Main Residency Status',
                             'Corporate Type',
-                            #'SME Commercial Corporate',
+                            'SME Commercial Corporate',
                             'Corporate Status',
                             'Justification on Corporate Status',
                             'Restructured / Rescheduled',
@@ -411,7 +408,7 @@ if submitted:
                             'Reason',
                             #'Date Untagged from R&R',
                             #'Justification for Untagged',
-                            'Frequency',
+                            'Frequency of R&R',
                             'Date of Overdue',
              'Overdue (Days)',
              'Month in Arrears',
@@ -424,7 +421,9 @@ if submitted:
                             'Reason for Impairment',
                             'Partial Write off Date',
                             'Write off Date',
-                            'Cancellation Date/Fully Settled Date','Position as At','Tenure ISS']]
+                            'Cancellation Date/Fully Settled Date',
+                            'Position as At']]
+  
   LDB4.fillna(0,inplace=True)
   
   #---------------------------------------------Details-------------------------------------------------------------

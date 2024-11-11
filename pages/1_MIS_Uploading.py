@@ -91,6 +91,8 @@ if submitted:
   #st.write(LDB1.head(3))
 
   LDB1['LGD'] = ""
+  LDB1['PF'] = ""
+  LDB1['Risk Analyst'] = ""
 
   LDB1['Expected Credit Loss (ECL) LAF (Facility Currency)'].fillna(0,inplace=True)
   LDB1['Expected Credit Loss LAF (ECL) (MYR)'].fillna(0,inplace=True)
@@ -128,8 +130,7 @@ if submitted:
                             'Payment/Repayment Frequency (Cost/Principal)',
                             'Effective cost of borrowings',
                             'Profit/Interest Margin',
-                            'Effective Interest Rate (EIR)',
-                            #'Average Profit/Interest Rate',
+                            'Effective Interest Rate (EIR)', #'Average Profit/Interest Rate',
                             'Ta`widh Compensation/Penalty Rate',
                             'Cost/Principal Outstanding (Facility Currency)',
                             'Cost/Principal Outstanding (MYR)',
@@ -170,10 +171,8 @@ if submitted:
                             'Month in Arrears',
                             'Date of Overdue',
                             'Risk Analyst',
-                            'Internal Credit Rating (PD/PF)',
-                            'CCPT Classification',
-                            #'PD',
-                            #'PF',
+                            'Internal Credit Rating (PD/PF)', #'CCPT Classification',#'PD',
+                            'PF',
                             'LGD',
                             'MFRS9 Staging',
              'Date Classified as Watchlist',
@@ -183,7 +182,8 @@ if submitted:
                             'Date Impaired',
                             'Industry (Risk)',
                             'Industry Classification',
-                            'Amount Approved / Facility Limit (Facility Currency)','Position as At' ]]
+                            'Amount Approved / Facility Limit (Facility Currency)',
+                            'Position as At' ]]
   
   #---------------------------------------------Details-------------------------------------------------------------
 
