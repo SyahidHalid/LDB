@@ -93,6 +93,8 @@ if submitted:
   LDB1['LGD'] = ""
   LDB1['PF'] = ""
   LDB1['Risk Analyst'] = ""
+  LDB1['Ownership'] = ""
+  LDB1['Officer in Charge'] = ""
 
   LDB1['Expected Credit Loss (ECL) LAF (Facility Currency)'].fillna(0,inplace=True)
   LDB1['Expected Credit Loss LAF (ECL) (MYR)'].fillna(0,inplace=True)
@@ -114,8 +116,8 @@ if submitted:
                             'Cancellation Date/Fully Settled Date',
                             'Write off Date',
                             'Partial Write off Date',
-                            #'Ownership',
-                            #'Officer in Charge',
+                            'Ownership',
+                            'Officer in Charge',
                             'Relationship Manager (RM)',
                             'Team',
                             'Facility Agreement Date',

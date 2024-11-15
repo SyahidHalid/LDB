@@ -102,6 +102,8 @@ if submitted:
   LDB1['SME Commercial Corporate'] = ""
   LDB1['PF'] = ""
   LDB1['Risk Analyst'] = ""
+  LDB1['Ownership'] = ""
+  LDB1['Officer in Charge'] = ""
 
   LDB2 = LDB1[['CIF Number',
              'EXIM Account No.',
@@ -113,8 +115,8 @@ if submitted:
                             'Customer Name',
                             'Relationship Manager (RM)',
                             'Team', #Banking Team',
-                            #'Ownership',
-                            #'Officer in Charge',
+                            'Ownership',
+                            'Officer in Charge',
                             'Syndicated / Club Deal',
                             'Nature of Account',
                             'Facility',
@@ -279,8 +281,8 @@ if submitted:
                             'Customer Name',
                             'Relationship Manager (RM)',
                             'Team', #Banking Team',
-                            #'Ownership',
-                            #'Officer in Charge',
+                            'Ownership',
+                            'Officer in Charge',
                             'Syndicated / Club Deal',
                             'Nature of Account',
                             'Facility',
