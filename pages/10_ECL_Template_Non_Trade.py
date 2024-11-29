@@ -143,7 +143,7 @@ if submitted:
                    'Actual Availability period',
                    'DPD',
                    'Principal payment frequency',
-                   'Interest payment frequency']]
+                   'Interest payment frequency']].rename(columns={'Currency':'Currency in Template'})
   
   #---------------------------------Download-------------------------------------------------------------
 

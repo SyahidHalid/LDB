@@ -688,6 +688,8 @@ if submitted:
   #st.write(f"Sum Total Cumulative Cost Payment (MYR) : RM{float(sum(appendfinal3['Cumulative Cost Payment/Principal Repayment (MYR) New']))}")
   #st.write("")
 
+  appendfinal3.rename(columns={"Ta`widh Payment/Penalty Repayment (Facility Currency)":"Ta`widh/Penalty (Facility Currency)",
+                               "Ta`widh Payment/Penalty Repayment (MYR)":"Ta`widh/Penalty (MYR)"},inplace=True)
 
   #st.write('Sum Total Loans Outstanding (MYR) : RM'+str(sum))
 

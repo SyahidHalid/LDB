@@ -35,7 +35,7 @@ html_template = """
 """
 st.markdown(html_template, unsafe_allow_html=True)
 #st.header('asd')
-st.subheader("Start:")
+st.subheader("Reminder to change '-' to 0 in BG (Exposure & Undrawn) before start:")
 #----------------------------Title--------------------------------------------------------------------
 
 #st.write('# Income Statement')

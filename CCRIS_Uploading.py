@@ -33,7 +33,7 @@ html_template = """
 """
 st.markdown(html_template, unsafe_allow_html=True)
 #st.header('asd')
-st.subheader("Start:")
+st.subheader("Reminder to copy data to template before start:")
 #----------------------------Title--------------------------------------------------------------------
 
 #st.write('# Income Statement')

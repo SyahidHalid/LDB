@@ -72,11 +72,11 @@ D3 = form.text_input("Input IA IIS Sheet ")
 D4 = form.text_input("Input C&C Conventional Sheet ")
 D5 = form.text_input("Input C&C Islamic Sheet ")
 
-May_RM = form.text_input("1st (IA) MYR Column Sequence Aug24 is 71, Add 1 for next: Sep24 72")
-May_FC = form.text_input("1st (IA) FC Column Sequence Aug24 is 142, Add 2 for next: Sep24 is 144")
+May_RM = form.text_input("1st (IA) MYR Column Sequence Nov24 is 74, Add 1 for next: Dec24 75")
+May_FC = form.text_input("1st (IA) FC Column Sequence Nov24 is 148, Add 2 for next: Dec24 is 150")
 
-May_RM_Is = form.text_input("2nd (C&C) MYR Column Sequence Aug24 is 61, Add 1 for next: Sep24 62")
-May_FC_Is = form.text_input("2nd (C&C) FC Column Sequence Aug24 is 122, Add 2 for next: Sep24 is 124")
+May_RM_Is = form.text_input("2nd (C&C) MYR Column Sequence Nov24 is 64, Add 1 for next: Dec24 65")
+May_FC_Is = form.text_input("2nd (C&C) FC Column Sequence Nov24 is 128, Add 2 for next: Dec24 is 130")
 
 df1 = form.file_uploader(label= "Upload Latest Allowance:")
 
