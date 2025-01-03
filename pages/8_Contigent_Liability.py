@@ -162,12 +162,14 @@ if submitted:
   #=========================================LC==============================================
 
   LC2 = LC1.iloc[np.where(LC1.TYPE.isin(["LC",'REVERSAL','AMENDMENT']))]
-
-  LC2.loc[LC2.APPLICANT.str.contains('WSA VENTURE AUSTRALIA'),'EXIM Account No.'] = '3308-02137-122-0291-00'
+  #st.write(LC2)
+  #LC2.loc[LC2.APPLICANT.str.contains('WSA VENTURE AUSTRALIA'),'EXIM Account No.'] = '3308-02137-122-0291-00'
+  LC2.loc[LC2.APPLICANT.isin(['WSA VENTURE AUSTRALIA (M) SDN BHD (FAC 3)']),'EXIM Account No.'] = '3308-02137-122-0291-00'
   LC2.loc[LC2.APPLICANT.isin(['WSA VENTURE AUSTRALIA (M) SDN BHD (FAC 3)']),'CIF Number'] = 'EXIM000283'
   LC2.loc[LC2.APPLICANT.isin(['WSA VENTURE AUSTRALIA (M) SDN BHD (FAC 3)']),'Finance(SAP) Number'] = '501085'
 
-  LC2.loc[LC2.APPLICANT.str.contains('PERTAMA FERROALLOYS SDN BHD'),'EXIM Account No.'] = '3308-02137-211-0142-00'
+  #LC2.loc[LC2.APPLICANT.str.contains('PERTAMA FERROALLOYS SDN BHD'),'EXIM Account No.'] = '3308-02137-211-0142-00'
+  LC2.loc[LC2.APPLICANT.isin(['PERTAMA FERROALLOYS SDN BHD']),'EXIM Account No.'] = '3308-02137-211-0142-00'
   LC2.loc[LC2.APPLICANT.isin(['PERTAMA FERROALLOYS SDN BHD']),'CIF Number'] = 'EXIM000140'
   LC2.loc[LC2.APPLICANT.isin(['PERTAMA FERROALLOYS SDN BHD']),'Finance(SAP) Number'] = '500840'
 
