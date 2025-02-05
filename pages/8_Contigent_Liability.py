@@ -1,3 +1,5 @@
+#20250205 repair bhgian LC, ad 2 cust bru. siti khadijah dagang and pertama ferralloy
+
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -121,6 +123,8 @@ if submitted:
   #BG2.loc[BG2['Facility Limit Undrawn (MYR)']=='-', 'Facility Limit Undrawn (MYR)'] = 0
   #BG2.loc[BG2['Facility Limit Undrawn (MYR)']=='REFER TO ABOVE', 'Facility Limit Undrawn (MYR)'] = 0
   BG2['Facility Limit Undrawn (MYR)'] = BG2['Facility Limit Undrawn (MYR)'].astype(float)
+  
+  st.write(BG2)
   
   BG2.Borrower = BG2.Borrower.str.upper()
 

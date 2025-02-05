@@ -146,6 +146,8 @@ if submitted:
   #Isl_Cost2['Sheet'] = 'Debtors Listing Islamic (Cost)'
   Isl_Cost2['Financing_Type'] = 'Islamic'
   
+  #st.write(Isl_Cost2.iloc[np.where(Isl_Cost2.Customer_Account.isin([501162,501163]))])
+  
   #---------------------------------Debtors Listing Islamic (Profit) include adjustment
   
   Isl_Profit1 = Isl_Profit.iloc[np.where(~Isl_Profit['Customer\nAccount'].isna())]
@@ -180,6 +182,7 @@ if submitted:
   NamaCompany = A001[['Company','Customer_Account']].drop_duplicates('Customer_Account', keep='first')
   A003 = A002.merge(NamaCompany,on='Customer_Account',how='left')
 
+  #st.write(A003.iloc[np.where(A003.Customer_Account.isin([501162,501163]))])
   #---------------------------------Modification MORA & R&R Apr2024
 
   Mora1 = Mora.fillna(0).rename(columns={'Borrower code': 'Customer_Account',
@@ -259,7 +262,7 @@ if submitted:
   A006 = A006.fillna(0).groupby(['Customer_Account'\
   ,'Currency','Financing_Type','Company'])[['Disbursement'\
   ,'Cost_Payment','Principal','Unearned_Profit','Rental(Ijarah)','Profit_Payment','Interest','Mora','Other_Charges','Interest_in_Suspense']].sum().reset_index()
-
+  
   #---------------------------------Penalty Islamic
   
   Ta_A1 = Ta_A.iloc[np.where(~Ta_A.Customer.isna())].fillna(0)
@@ -298,12 +301,16 @@ if submitted:
 
   #Ta_A1.columns = Ta_R1.columns
   Ta_AR = pd.concat([Ta_A1,Ta_R1])
+
   Ta_AR.fillna(0, inplace=True)
+  
+  Ta_AR = Ta_AR.groupby(['Company','Customer_Account','Financing_Type'])[["Penalty_Tawidh","Recovery_Tawidh"]].sum().reset_index()
 
   #st.write(Ta_AR)
+  #st.write(Ta_AR.iloc[np.where(Ta_AR.Customer_Account.isin([501162,501163]))])
 
   A006_1 = A006.merge(Ta_AR,on=['Customer_Account','Company','Financing_Type'],how='outer',indicator=True)
-
+  
   NamaTa_AR = A006_1[['Company','Customer_Account','Currency']].drop_duplicates('Customer_Account', keep='first')
   A006_1 = A006_1.drop(['Company','Currency','_merge'],axis=1).merge(NamaTa_AR,on='Customer_Account',how='left')
 
@@ -374,14 +381,14 @@ if submitted:
   
   #Combine Conv Principal+Accrued
   C001 = Conv1.merge(Accrued1,on=['Customer_Account','Company','Financing_Type'],how='outer',indicator=True)
-
+  
   NamaConv = C001[['Company','Customer_Account','Currency']].drop_duplicates('Customer_Account', keep='first')
   C002 = C001.drop(['Company','Currency','_merge'],axis=1).merge(NamaConv,on='Customer_Account',how='left')
 
   C002 = C002.fillna(0).groupby(['Customer_Account'\
   ,'Currency','Financing_Type','Company'])[['Disbursement'\
   ,'Repayment','Principal','Interest_For_the_Month','Interest','Profit_Payment']].sum().reset_index()
-
+  
   #Other Debtors Apr2024
   Others_conv1 = Others_conv.iloc[np.where(~Others_conv.Customer.isna())].fillna(0)
 
@@ -408,7 +415,7 @@ if submitted:
   C004 = C004.fillna(0).groupby(['Customer_Account'\
   ,'Currency','Financing_Type','Company'])[['Disbursement'\
   ,'Repayment','Principal','Interest_For_the_Month','Interest','Profit_Payment','Other_Charges']].sum().reset_index()
-
+  
   #IIS
   IIS1 = IIS.iloc[np.where(~IIS.Customer.isna())].fillna(0)
 
@@ -467,14 +474,16 @@ if submitted:
   
   #st.write(sum(C005_1["Penalty_Tawidh"]))
   #st.write(sum(Penalty1["Penalty_Tawidh"]))
-
+  
   #-------------------------------------------------combine-------------------------------------------------
   C005_1['Recovery_Tawidh'] = 0
   C005_1['Cost_Payment'] = 0
-  C005_1['Unearned_Profit'] = C005['Interest_For_the_Month']
+  C005_1['Unearned_Profit'] = C005_1['Interest_For_the_Month']
   #C005['Profit_Payment'] = 0
   C005_1['Mora'] = 0
   C005_1['Rental(Ijarah)'] = 0
+  
+  #st.write(C005_1.iloc[np.where(C005_1.Customer_Account.isin([500937]))])
 
   C006 = C005_1[['Customer_Account','Currency','Financing_Type','Company','Disbursement','Repayment','Cost_Payment',
              'Principal','Unearned_Profit','Rental(Ijarah)','Profit_Payment','Interest','Mora','Other_Charges',
@@ -491,7 +500,7 @@ if submitted:
 
   C006.columns = A007.columns
   appendR = pd.concat([C006,A007])
-
+  
   NamaappendR = appendR.iloc[np.where(~(appendR.Currency.isin([0,'0'])))][['Company','Currency','Customer_Account']].drop_duplicates('Customer_Account', keep='first')
   appendR = appendR.drop(['Company','Currency'],axis=1).merge(NamaappendR,on='Customer_Account',how='left')
 
