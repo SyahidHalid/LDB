@@ -176,8 +176,17 @@ if submitted:
   LC2.loc[LC2.APPLICANT.isin(['PERTAMA FERROALLOYS SDN BHD']),'EXIM Account No.'] = '3308-02137-211-0142-00'
   LC2.loc[LC2.APPLICANT.isin(['PERTAMA FERROALLOYS SDN BHD']),'CIF Number'] = 'EXIM000140'
   LC2.loc[LC2.APPLICANT.isin(['PERTAMA FERROALLOYS SDN BHD']),'Finance(SAP) Number'] = '500840'
+  
+  LC2.loc[LC2.APPLICANT.isin(['PERTAMA FERROALLOYS SDN BHD (i)']),'EXIM Account No.'] = '3308-02137-112-0361-00'
+  LC2.loc[LC2.APPLICANT.isin(['PERTAMA FERROALLOYS SDN BHD (i)']),'CIF Number'] = 'EXIM000140'
+  LC2.loc[LC2.APPLICANT.isin(['PERTAMA FERROALLOYS SDN BHD (i)']),'Finance(SAP) Number'] = '501168'
 
-  LC2['Type of Financing'] = 'I'
+  LC2.loc[LC2.APPLICANT.isin(['SITI KHADIJAH DAGANG SDN BHD']),'EXIM Account No.'] = '3308-01137-110-0340-00'
+  LC2.loc[LC2.APPLICANT.isin(['SITI KHADIJAH DAGANG SDN BHD']),'CIF Number'] = 'EXIM000555'
+  LC2.loc[LC2.APPLICANT.isin(['SITI KHADIJAH DAGANG SDN BHD']),'Finance(SAP) Number'] = '501124'
+
+
+  LC2['Type of Financing'] = 'I/C'
 
   LC3 = LC2.fillna(0).groupby(['CIF Number','EXIM Account No.','Finance(SAP) Number','APPLICANT',
                              'Type of Financing'])[['AMOUNT (RM)']].sum().reset_index().rename(columns={'APPLICANT':'Customer Name',
