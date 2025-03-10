@@ -72,11 +72,11 @@ D3 = form.text_input("Input IA IIS Sheet ")
 D4 = form.text_input("Input C&C Conventional Sheet ")
 D5 = form.text_input("Input C&C Islamic Sheet ")
 
-May_RM = form.text_input("1st (IA) MYR Column Sequence Nov24 is 74, Add 1 for next: Dec24 75")
-May_FC = form.text_input("1st (IA) FC Column Sequence Nov24 is 148, Add 2 for next: Dec24 is 150")
+May_RM = form.text_input("1st (IA) MYR Column Sequence Jan25 is 76, Add 1 for next: Feb24 77, Mar25 78, Apr25 79, May25 80, Jun25 81, Jul25 82, Aug25 83, Sep25 84, Oct25 85, Nov25 86, Dec25 87")
+May_FC = form.text_input("1st (IA) FC Column Sequence Jan25 is 152, Add 2 for next: Feb24 154, Mar25 156, Apr25 158, May25 160, Jun25 162, Jul25 164, Aug25 166, Sep25 168, Oct25 170, Nov25 172, Dec25 174")
 
-May_RM_Is = form.text_input("2nd (C&C) MYR Column Sequence Nov24 is 64, Add 1 for next: Dec24 65")
-May_FC_Is = form.text_input("2nd (C&C) FC Column Sequence Nov24 is 128, Add 2 for next: Dec24 is 130")
+May_RM_Is = form.text_input("2nd (C&C) MYR Column Sequence Jan25 is 66, Add 1 for next: Feb24 67, Mar25 68, Apr25 69, May25 70, Jun25 71, Jul25 72, Aug25 73, Sep25 74, Oct25 75, Nov25 76, Dec25 77")
+May_FC_Is = form.text_input("2nd (C&C) FC Column Sequence Jan25 is 132, Add 2 for next: Feb24 134, Mar25 136, Apr25 138, May25 140, Jun25 142, Jul25 144, Aug25 146, Sep25 148, Oct25 150, Nov25 152, Dec25 154")
 
 df1 = form.file_uploader(label= "Upload Latest Allowance:")
 
