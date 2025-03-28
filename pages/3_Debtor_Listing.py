@@ -61,7 +61,7 @@ form = st.form("Basic form")
 
 #date_format = form.text_input("Input Date (i.e. 202409):")
 
-BalanceOS = form.text_input("Input Balance Column ") #"Balance_31stAugust2024"
+BalanceOS = "Balance" #form.text_input("Input Balance Column ") 
 
 year = form.slider("Year", min_value=2020, max_value=2030, step=1)
 month = form.slider("Month", min_value=1, max_value=12, step=1)
@@ -69,18 +69,35 @@ month = form.slider("Month", min_value=1, max_value=12, step=1)
 #age = form.slider("Age", min_value=18, max_value=100, step=1)
 #date = form.date_input("Date", value=dt.date.today())
 
-D1 = form.text_input("Input Islamic Cost Sheet ")
-D2 = form.text_input("Input Islamic Profit Sheet ")
-D3 = form.text_input("Input Mora Sheet ")
-D4 = form.text_input("Input Conventional Cost Sheet ")
-D5 = form.text_input("Input Conventional Accrued Sheet ")
-D6 = form.text_input("Input Conventional Other Charges Sheet ")
-D7 = form.text_input("Input Islamic Other Charges Sheet ")
-D8 = form.text_input("Input IIS Sheet ")
-D9 = form.text_input("Input PIS Sheet ")
-D10 = form.text_input("Input Penalty Sheet ")
-D11 = form.text_input("Input Ta'widh Active Sheet ")
-D12 = form.text_input("Input Ta'widh Recovery Sheet ")
+D1 = form.text_input("Input Islamic Cost Sheet ") #"Debtors Listing Islamic (Cost)" #
+D2 = form.text_input("Input Islamic Profit Sheet ") #"Debtors Listing Islamic (Profit" #
+D3 = form.text_input("Input Mora Sheet ") #"Modification MORA & R&R" #
+D4 = form.text_input("Input Conventional Cost Sheet ") #"Debtors Listing (C)" #
+D5 = form.text_input("Input Conventional Accrued Sheet ") #"Accrued Interest" #
+D6 = form.text_input("Input Conventional Other Charges Sheet ") #"Other Debtors Conv" #
+D7 = form.text_input("Input Islamic Other Charges Sheet ") #"Other Debtors Islamic" #
+D8 = form.text_input("Input IIS Sheet ") #"IIS" #
+D9 = form.text_input("Input PIS Sheet ") #"PIS" #
+D10 = form.text_input("Input Penalty Sheet ") #"Penalty" #
+D11 = form.text_input("Input Ta'widh Active Sheet ") #"Ta'widh (Active)" #
+D12 = form.text_input("Input Ta'widh Recovery Sheet ") #"Ta'widh (Recovery)" #
+D13 = form.text_input("Input IIS P13 Sheet (if any)") #"IIS P13" #
+D14 = form.text_input("Input PIS P13 Sheet (if any)") #"PIS P13" #
+
+# D1 = "Debtors Listing Islamic (Cost)" 
+# D2 = "Debtors Listing Islamic (Profit" 
+# D3 = "Modification MORA & R&R" 
+# D4 = "Debtors Listing (C)" 
+# D5 = "Accrued Interest" 
+# D6 = "Other Debtors Conv" 
+# D7 = "Other Debtors Islamic" 
+# D8 = "IIS" 
+# D9 = "PIS" 
+# D10 = "Penalty" 
+# D11 = "Ta'widh (Active)" 
+# D12 = "Ta'widh (Recovery)" 
+# D13 = "IIS P13" 
+# D14 = "PIS P13" 
 
 df1 = form.file_uploader(label= "Upload Latest Debtor Listing:")
 
@@ -98,7 +115,7 @@ if df1:
   Penalty = pd.read_excel(df1, sheet_name=D10, header=4)
   Ta_A = pd.read_excel(df1, sheet_name=D11, header=4)
   Ta_R = pd.read_excel(df1, sheet_name=D12, header=4)
-
+  
 
 df2 = form.file_uploader(label= "Upload Month End Rate:")
 
@@ -182,7 +199,47 @@ if submitted:
   NamaCompany = A001[['Company','Customer_Account']].drop_duplicates('Customer_Account', keep='first')
   A003 = A002.merge(NamaCompany,on='Customer_Account',how='left')
 
-  #st.write(A003.iloc[np.where(A003.Customer_Account.isin([501162,501163]))])
+  #st.write(A003)
+  #st.write(A003.shape)
+  #st.write(A003.iloc[np.where(A003.Customer_Account.isin([500707]))])
+
+  if D14 == "PIS P13":
+    PIS_P13 = pd.read_excel(df1, sheet_name=D14, header=4)
+
+    PIS_P131 = PIS_P13.iloc[np.where(~PIS_P13.Customer.isna())].fillna(0)
+
+    PIS_P131.columns = PIS_P131.columns.str.replace("\n", "_")
+    PIS_P131.columns = PIS_P131.columns.str.replace(" ", "")
+
+    PIS_P131.rename(columns={'Customer': 'Customer_Account',
+                              'SearchTerm':'Company',
+                              'Crcy':'Currency',
+                              'Accumulatedbalance':'Interest'},inplace=True)
+
+    PIS_P131.Customer_Account = PIS_P131.Customer_Account.astype(int)
+    PIS_P131.Interest = PIS_P131.Interest.astype(float)
+
+    PIS_P132 = PIS_P131.fillna(0).groupby(['Customer_Account'])[['Interest']].sum().reset_index()
+
+    #PIS_P132['Financing_Type'] = 'Islamic'
+    
+    #PIS_P132 = PIS_P132[['Customer_Account']].drop_duplicates('Customer_Account', keep='first')
+
+    A003_P13 = A003.merge(PIS_P132,on='Customer_Account',how='left', suffixes=('', '_new'))
+
+    A003_P13['Interest'] = A003_P13['Interest_new'].combine_first(A003_P13['Interest'])
+
+    # Drop the temporary '_new' column
+    A003_P13 = A003_P13.drop(columns='Interest_new')
+
+    A003 = A003_P13
+  else:
+    pass
+  
+  #st.write(A003_P13)
+  #st.write(A003.shape)
+  #st.write(A003.iloc[np.where(A003.Customer_Account.isin([500707,500890,501020,501132,501178,501179,500948,50092,501018]))])
+
   #---------------------------------Modification MORA & R&R Apr2024
 
   Mora1 = Mora.fillna(0).rename(columns={'Borrower code': 'Customer_Account',
@@ -389,6 +446,48 @@ if submitted:
   ,'Currency','Financing_Type','Company'])[['Disbursement'\
   ,'Repayment','Principal','Interest_For_the_Month','Interest','Profit_Payment']].sum().reset_index()
   
+  #st.write(C002.shape)
+
+  if D13 == "IIS P13":
+    IIS_P13 = pd.read_excel(df1, sheet_name=D13, header=4)
+
+    IIS_P131 = IIS_P13.iloc[np.where(~IIS_P13.Customer.isna())].fillna(0)
+
+    IIS_P131.columns = IIS_P131.columns.str.replace("\n", "_")
+    IIS_P131.columns = IIS_P131.columns.str.replace(" ", "")
+
+    IIS_P131.rename(columns={'Customer': 'Customer_Account',
+                              'SearchTerm':'Company',
+                              'Crcy':'Currency',
+                              'Accumulatedbalance':'Interest'},inplace=True)
+
+    IIS_P131.Customer_Account = IIS_P131.Customer_Account.astype(int)
+    IIS_P131.Interest = IIS_P131.Interest.astype(float)
+
+    IIS_P1312 = IIS_P131.fillna(0).groupby(['Customer_Account'])[['Interest']].sum().reset_index()
+
+    #PIS_P132['Financing_Type'] = 'Islamic'
+    
+    #PIS_P132 = PIS_P132[['Customer_Account']].drop_duplicates('Customer_Account', keep='first')
+
+    C002_P13 = C002.merge(IIS_P1312,on='Customer_Account',how='left', suffixes=('', '_new'))
+
+    C002_P13['Interest'] = C002_P13['Interest_new'].combine_first(C002_P13['Interest'])
+
+    # Drop the temporary '_new' column
+    C002_P13 = C002_P13.drop(columns='Interest_new')
+
+    C002 = C002_P13
+  else:
+    pass
+  
+  #st.write(A003_P13)
+  #st.write(C002.shape)
+  #st.write(C002.iloc[np.where(C002.Customer_Account.isin([500042,500265,500558,500776,500883,500913,500914,500980,501000,501045]))])
+
+
+
+
   #Other Debtors Apr2024
   Others_conv1 = Others_conv.iloc[np.where(~Others_conv.Customer.isna())].fillna(0)
 
@@ -541,6 +640,7 @@ if submitted:
 
   LDB_prev.columns = LDB_prev.columns.str.replace("\n", "")
 
+
   appendfinal_ldb = appendfinal.merge(LDB_prev.iloc[np.where(LDB_prev['EXIM Account No.']!="Total")][['EXIM Account No.','Finance(SAP) Number',
                                               'Customer Name',
                                               'Facility Currency',
@@ -646,7 +746,11 @@ if submitted:
   #appendfinal3['Cumulative Cost Payment/Principal Repayment (MYR) New'].fillna(0,inplace=True)
 
 
-  
+  #st.write(A003.iloc[np.where(A003.Customer_Account.isin([500707,500890,501020,501132,501178,501179,500948,50092,501018]))])
+  #st.write(C002.iloc[np.where(C002.Customer_Account.isin([500042,500265,500558,500776,500883,500913,500914,500980,501000,501045]))])
+  #st.write(appendfinal.iloc[np.where(appendfinal['Customer_Account'].isin([500707,500890,501020,501132,501178,501179,500948,50092,501018,500042,500265,500558,500776,500883,500913,500914,500980,501000,501045]))])
+  #st.write(appendfinal3.iloc[np.where(appendfinal3['Finance(SAP) Number'].isin(['500707','500890','501020','501132','501178','501179','500948','50092','501018','500042','500265','500558','500776','500883','500913','500914','500980','501000','501045']))])
+
   #---------------------------------------------Download-------------------------------------------------------------
 
 

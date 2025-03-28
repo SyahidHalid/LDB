@@ -124,7 +124,7 @@ if submitted:
   #BG2.loc[BG2['Facility Limit Undrawn (MYR)']=='REFER TO ABOVE', 'Facility Limit Undrawn (MYR)'] = 0
   BG2['Facility Limit Undrawn (MYR)'] = BG2['Facility Limit Undrawn (MYR)'].astype(float)
   
-  st.write(BG2)
+  #st.write(BG2)
   
   BG2.Borrower = BG2.Borrower.str.upper()
 
@@ -166,7 +166,10 @@ if submitted:
   #=========================================LC==============================================
 
   LC2 = LC1.iloc[np.where(LC1.TYPE.isin(["LC",'REVERSAL','AMENDMENT']))]
+  LC2.Borrower = LC2.APPLICANT.str.replace("\n", "")
+
   #st.write(LC2)
+  
   #LC2.loc[LC2.APPLICANT.str.contains('WSA VENTURE AUSTRALIA'),'EXIM Account No.'] = '3308-02137-122-0291-00'
   LC2.loc[LC2.APPLICANT.isin(['WSA VENTURE AUSTRALIA (M) SDN BHD (FAC 3)']),'EXIM Account No.'] = '3308-02137-122-0291-00'
   LC2.loc[LC2.APPLICANT.isin(['WSA VENTURE AUSTRALIA (M) SDN BHD (FAC 3)']),'CIF Number'] = 'EXIM000283'
@@ -181,10 +184,17 @@ if submitted:
   LC2.loc[LC2.APPLICANT.isin(['PERTAMA FERROALLOYS SDN BHD (i)']),'CIF Number'] = 'EXIM000140'
   LC2.loc[LC2.APPLICANT.isin(['PERTAMA FERROALLOYS SDN BHD (i)']),'Finance(SAP) Number'] = '501168'
 
-  LC2.loc[LC2.APPLICANT.isin(['SITI KHADIJAH DAGANG SDN BHD']),'EXIM Account No.'] = '3308-01137-110-0340-00'
-  LC2.loc[LC2.APPLICANT.isin(['SITI KHADIJAH DAGANG SDN BHD']),'CIF Number'] = 'EXIM000555'
-  LC2.loc[LC2.APPLICANT.isin(['SITI KHADIJAH DAGANG SDN BHD']),'Finance(SAP) Number'] = '501124'
+  LC2.loc[LC2.APPLICANT.str.contains('SITI KHADIJAH DAGANG SDN BHD'),'EXIM Account No.'] = '3308-01137-110-0340-00'
+  LC2.loc[LC2.APPLICANT.str.contains('SITI KHADIJAH DAGANG SDN BHD'),'CIF Number'] = 'EXIM000555'
+  LC2.loc[LC2.APPLICANT.str.contains('SITI KHADIJAH DAGANG SDN BHD'),'Finance(SAP) Number'] = '501124'
 
+  LC2.loc[LC2.APPLICANT.isin(['SITI KHADIJAH DAGANG SDN BHD (Fac: SITI KHADIJAH APPAREL SDN BHD)']),'EXIM Account No.'] = '3308-01137-110-0340-00'
+  LC2.loc[LC2.APPLICANT.isin(['SITI KHADIJAH DAGANG SDN BHD (Fac: SITI KHADIJAH APPAREL SDN BHD)']),'CIF Number'] = 'EXIM000555'
+  LC2.loc[LC2.APPLICANT.isin(['SITI KHADIJAH DAGANG SDN BHD (Fac: SITI KHADIJAH APPAREL SDN BHD)']),'Finance(SAP) Number'] = '501124'
+
+  LC2.loc[LC2.APPLICANT.isin(['FATHOPES ENERGY SDN BHD']),'EXIM Account No.'] = '3308-01137-110-0388-02'
+  LC2.loc[LC2.APPLICANT.isin(['FATHOPES ENERGY SDN BHD']),'CIF Number'] = 'EXIM000622'
+  LC2.loc[LC2.APPLICANT.isin(['FATHOPES ENERGY SDN BHD']),'Finance(SAP) Number'] = '501208'
 
   LC2['Type of Financing'] = 'I/C'
 
@@ -193,7 +203,7 @@ if submitted:
   'AMOUNT (RM)':'Contingent Liability Letter of Credit (MYR)',
   'CURR':'Facility Currency',
   'COUNTRY':'Country Exposure'}) #
-
+  
   #'FOREIGN AMOUNT', 
   #'FOREIGN AMOUNT':'Contingent Liability Letter of Credit (Facility Currency)',
   LC3['Unutilised/Undrawn Amount (FC)'] = 0
@@ -201,12 +211,15 @@ if submitted:
 
   append = pd.concat([BG3,LC3]).fillna(0)
 
+
   LDB_prev['EXIM Account No.'] = LDB_prev['EXIM Account No.'].astype(str)
 
   appendfinal_ldb = append.merge(LDB_prev[['EXIM Account No.',
                                               'Facility Currency']],on=['EXIM Account No.'],how='left', suffixes=('_x', ''),indicator=True)
 
   appendfinal_ldb['Facility Currency'] = appendfinal_ldb['Facility Currency'].str.strip()
+
+  #st.write(appendfinal_ldb)
 
   append1 = appendfinal_ldb.merge(MRate[['Month','Curr']].rename(columns={'Month':'Facility Currency'}), on='Facility Currency', how='left')
 
