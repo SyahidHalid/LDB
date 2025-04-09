@@ -108,6 +108,7 @@ if submitted:
   #---------------------------------------------Start
 
   BG1['C/I'] = BG1['C/I'].str.strip()
+  BG1['C/I'] = BG1['C/I'].str.upper()
   BG2 = BG1.iloc[np.where(BG1['C/I'].isin(['C','I']))]
 
   #BG2['Exposure (RM)'] = BG2['Exposure (RM)'].str.strip()
