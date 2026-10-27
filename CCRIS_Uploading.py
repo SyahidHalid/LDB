@@ -56,6 +56,196 @@ st.write('Please fill in the form below to auto run by uploading latest loan dat
 
 #----------------------------Form--------------------------------------------------------------------
 
+# ---------------------------- Two Forms Side by Side ----------------------------
+
+left_col, right_col = st.columns(2)
+
+# ========================= LEFT FORM =========================
+with left_col:
+
+    st.subheader("Loan Database")
+
+    with st.form("loan_database_form"):
+
+        year = st.slider(
+            "Year",
+            min_value=2020,
+            max_value=2030,
+            step=1,
+            key="loan_year"
+        )
+
+        month = st.slider(
+            "Month",
+            min_value=1,
+            max_value=12,
+            step=1,
+            key="loan_month"
+        )
+
+        df1 = st.file_uploader(
+            "Upload Latest Loan Database:",
+            type=["xlsx"],
+            key="loan_file"
+        )
+
+        submitted_loan = st.form_submit_button(
+            "Submit Loan Database",
+            use_container_width=True
+        )
+
+
+# ========================= RIGHT FORM =========================
+with right_col:
+
+    st.subheader("Second File")
+
+    with st.form("second_form"):
+
+        year2 = st.slider(
+            "Year",
+            min_value=2020,
+            max_value=2030,
+            step=1,
+            key="second_year"
+        )
+
+        month2 = st.slider(
+            "Month",
+            min_value=1,
+            max_value=12,
+            step=1,
+            key="second_month"
+        )
+
+        df2 = st.file_uploader(
+            "Upload Second File:",
+            type=["xlsx"],
+            key="second_file"
+        )
+
+        submitted_second = st.form_submit_button(
+            "Submit Second File",
+            use_container_width=True
+        )
+
+# ========================= PROCESS LEFT FORM =========================
+
+if submitted_loan:
+
+    if df1 is None:
+        st.error("Please upload the Loan Database first.")
+
+    else:
+        sheet = "Loan Database"
+
+        df1 = pd.read_excel(
+            df1,
+            sheet_name=sheet,
+            header=1
+        )
+
+        st.success(
+            f"Loan Database submitted for {year}-{month:02d}"
+        )
+
+        st.write(df1.head())
+
+
+# ========================= PROCESS RIGHT FORM =========================
+
+if submitted_second:
+
+    if df2 is None:
+        st.error("Please upload the second file first.")
+
+    else:
+        df2 = pd.read_excel(df2)
+
+        st.success(
+            f"Second file submitted for {year2}-{month2:02d}"
+        )
+
+        st.write(df2.head())
+
+# Header
+st.subheader("Reminder to copy data to template before start:")
+
+st.write(
+    "Please fill in the form below to auto run by uploading "
+    "latest loan database received in xlsx format below:"
+)
+
+# Create 2 columns
+col1, col2 = st.columns(2)
+
+
+# ============================================================
+# FORM 1
+# ============================================================
+
+with col1:
+
+    st.subheader("CCRIS Uploading")
+
+    with st.form("Basic_form"):
+
+        year = st.slider(
+            "Year",
+            min_value=2020,
+            max_value=2030
+        )
+
+        month = st.slider(
+            "Month",
+            min_value=1,
+            max_value=12
+        )
+
+        df1 = st.file_uploader(
+            "Upload Latest Loan Database:",
+            type=["xlsx"]
+        )
+
+        submitted = st.form_submit_button(
+            "Submit",
+            use_container_width=True
+        )
+
+
+# ============================================================
+# FORM 2
+# ============================================================
+
+with col2:
+
+    st.subheader("Other Upload")
+
+    with st.form("Second_form"):
+
+        year2 = st.slider(
+            "Year",
+            min_value=2020,
+            max_value=2030
+        )
+
+        month2 = st.slider(
+            "Month",
+            min_value=1,
+            max_value=12
+        )
+
+        df2 = st.file_uploader(
+            "Upload Other File:",
+            type=["xlsx"]
+        )
+
+        submitted2 = st.form_submit_button(
+            "Submit",
+            use_container_width=True
+        )
+
+
 form = st.form("Basic form")
 #name = form.text_input("Name")
 
