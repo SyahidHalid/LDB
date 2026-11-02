@@ -1,3 +1,5 @@
+# "C:\Users\syahidhalid\Syahid_PC\Python 3.13.14\python.exe" -m pip install pip-system-certs
+
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -53,10 +55,230 @@ st.write('Please fill in the form below to auto run by uploading latest loan dat
 #  st.warning("Enter Name!")
 #  st.stop()
 #st.success("Go ahead")
+import requests
+import certifi
+
+st.write("CA:", certifi.where())
+
+try:
+    r = requests.get(
+        "https://directline.botframework.com",
+        timeout=10
+    )
+
+    st.success(f"HTTPS connection works: {r.status_code}")
+
+except Exception as e:
+    st.error(e)
 
 #----------------------------Form--------------------------------------------------------------------
 
+import time
+
+# =========================================================
+# CONFIG
+# =========================================================
+
+DIRECT_LINE_SECRET = st.secrets["DIRECT_LINE_SECRET"]
+
+DIRECT_LINE_URL = "https://directline.botframework.com/v3/directline"
+
+
+# =========================================================
+# CREATE DIRECT LINE CONVERSATION
+# =========================================================
+
+def start_conversation():
+
+    headers = {
+        "Authorization": f"Bearer {DIRECT_LINE_SECRET}"
+    }
+
+    response = requests.post(
+        f"{DIRECT_LINE_URL}/conversations",
+        headers=headers,
+        timeout=30
+    )
+
+    response.raise_for_status()
+
+    data = response.json()
+
+    return data["conversationId"]
+
+
+# =========================================================
+# SEND MESSAGE
+# =========================================================
+
+def send_message(conversation_id, message):
+
+    headers = {
+        "Authorization": f"Bearer {DIRECT_LINE_SECRET}",
+        "Content-Type": "application/json"
+    }
+
+    payload = {
+        "type": "message",
+        "from": {
+            "id": "streamlit-user"
+        },
+        "text": message
+    }
+
+    response = requests.post(
+        f"{DIRECT_LINE_URL}/conversations/{conversation_id}/activities",
+        headers=headers,
+        json=payload,
+        timeout=30
+    )
+
+    response.raise_for_status()
+
+
+# =========================================================
+# GET RESPONSE
+# =========================================================
+
+def get_response(conversation_id):
+
+    headers = {
+        "Authorization": f"Bearer {DIRECT_LINE_SECRET}"
+    }
+
+    for _ in range(15):
+
+        response = requests.get(
+            f"{DIRECT_LINE_URL}/conversations/{conversation_id}/activities",
+            headers=headers,
+            timeout=30
+        )
+
+        response.raise_for_status()
+
+        activities = response.json().get("activities", [])
+
+        bot_messages = [
+            activity
+            for activity in activities
+            if (
+                activity.get("type") == "message"
+                and activity.get("from", {}).get("id") != "streamlit-user"
+                and activity.get("text")
+            )
+        ]
+
+        if bot_messages:
+            return bot_messages[-1]["text"]
+
+        time.sleep(1)
+
+    return "Tanya Banking did not return a response."
+
+
+# =========================================================
+# SESSION STATE
+# =========================================================
+
+if "conversation_id" not in st.session_state:
+
+    try:
+        st.session_state.conversation_id = start_conversation()
+
+    except Exception as e:
+        st.error(f"Unable to connect to Tanya Banking: {e}")
+        st.stop()
+
+
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+
+# =========================================================
+# UI
+# =========================================================
+
+st.title("Tanya Banking")
+st.caption("Powered by Copilot Studio")
+
+for message in st.session_state.messages:
+
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+# ==========================================
+# CHAT HISTORY
+# ==========================================
+
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+# Display previous messages
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+
+# ==========================================
+# PROMPT BOX
+# ==========================================
+
+prompt = st.chat_input("Ask Tanya Banking...")
+
+if prompt:
+
+    # Store user message
+    st.session_state.messages.append({
+        "role": "user",
+        "content": prompt
+    })
+
+    # Display user message
+    with st.chat_message("user"):
+        st.markdown(prompt)
+
+    # ======================================
+    # SEND TO TANYA BANKING
+    # ======================================
+
+    try:
+
+        send_message(
+            st.session_state.conversation_id,
+            prompt
+        )
+
+        with st.chat_message("assistant"):
+            with st.spinner("Tanya Banking is thinking..."):
+
+                answer = get_response(
+                    st.session_state.conversation_id
+                )
+
+                st.markdown(answer)
+
+        # Store Tanya response
+        st.session_state.messages.append({
+            "role": "assistant",
+            "content": answer
+        })
+
+    except Exception as e:
+        st.error(f"Tanya Banking error: {e}")
+
+
 # ---------------------------- Two Forms Side by Side ----------------------------
+
+# sharepoint_url = """
+# https://mexim.sharepoint.com/sites/Division-Banking/Shared%20Documents/Copilot%20Studio%20Agents?id=%2Fsites%2FDivision%2DBanking%2FShared%20Documents%2FCopilot%20Studio%20Agents%2FTanya%20Banking%2Eagent&parent=%2Fsites%2FDivision%2DBanking%2FShared%20Documents%2FCopilot%20Studio%20Agents""".strip()
+
+# st.title("Tanya Banking")
+
+# st.iframe(
+#     sharepoint_url,
+#     width="stretch",
+#     height=800
+# )
 
 left_col, right_col = st.columns(2)
 
